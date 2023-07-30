@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="index.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -11,5 +13,14 @@
     <object type="text/html" data="world-map.html"></object>
 </div>
 </object>
+
+<!-- News 영역 -->
+<div id="news"></div>
+<button onclick="getNews()">Get News</button>
+
+<!-- Youtube 영역 -->
+<div id="video-container"></div>
+<button onclick="getPopularVideos()">Get Videos</button>
+
 </body>
 </html>
