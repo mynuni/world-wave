@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -15,6 +17,8 @@ public class PostResponseDto {
     private String title;
     private String content;
     private String author;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdatedAt;
 
     public static PostResponseDto convertToDto(Post post) {
         return PostResponseDto.builder()
@@ -22,6 +26,8 @@ public class PostResponseDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .author(post.getAuthor())
+                .createdAt(post.getCreatedAt())
+                .lastUpdatedAt(post.getLastUpdatedAt())
                 .build();
     }
 

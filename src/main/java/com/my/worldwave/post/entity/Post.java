@@ -1,16 +1,18 @@
 package com.my.worldwave.post.entity;
 
+import com.my.worldwave.util.domain.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Table(name = "POSTS")
 @Entity
-public class Post {
+public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +21,7 @@ public class Post {
     private String content;
     private String author;
 
-    // 날짜, 댓글 등
+    // 댓글 등
 
     @Builder
     public Post(String title, String content, String author) {
