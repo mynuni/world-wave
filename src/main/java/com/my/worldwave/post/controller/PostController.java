@@ -21,7 +21,6 @@ public class PostController {
     @GetMapping
     public ResponseEntity<List<PostResponseDto>> findAllPosts(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "5") int size) {
-
         List<PostResponseDto> posts = postService.findAllPosts(page, size);
         return ResponseEntity.ok(posts);
     }
@@ -36,13 +35,12 @@ public class PostController {
     public ResponseEntity<?> createPost(@RequestBody PostRequestDto postDto) {
         Long postId = postService.createPost(postDto);
         String location = buildLocationUri(postId);
-
         return ResponseEntity.status(HttpStatus.CREATED).location(URI.create(location)).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postDto) {
-        PostResponseDto postResponseDto = postService.updatePost(id, postDto);
+    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto) {
+        PostResponseDto postResponseDto = postService.updatePost(id, postRequestDto);
         return ResponseEntity.ok(postResponseDto);
     }
 
@@ -55,7 +53,7 @@ public class PostController {
     private String buildLocationUri(Long postId) {
         return ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/post/{id}")
+                .path("/{id}")
                 .buildAndExpand(postId)
                 .toUriString();
     }

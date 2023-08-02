@@ -3,6 +3,7 @@ package com.my.worldwave.post.service;
 import com.my.worldwave.post.dto.PostRequestDto;
 import com.my.worldwave.post.dto.PostResponseDto;
 import com.my.worldwave.post.entity.Post;
+import com.my.worldwave.post.repository.CommentRepository;
 import com.my.worldwave.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import static com.my.worldwave.post.dto.PostResponseDto.convertToDto;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
     public List<PostResponseDto> findAllPosts(int page, int size) {
@@ -32,17 +34,8 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResponseDto findPostById(Long id) {
-        Post foundPost = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("POST NOT FOUND ID:" + id));
-
+        Post foundPost = findByPostId(id);
         return convertToDto(foundPost);
-
-//        return PostResponseDto.builder()
-//                .id(foundPost.getId())
-//                .title(foundPost.getTitle())
-//                .content(foundPost.getContent())
-//                .author(foundPost.getAuthor())
-//                .build();
     }
 
     public Long createPost(PostRequestDto postDto) {
@@ -57,22 +50,19 @@ public class PostService {
     }
 
     public PostResponseDto updatePost(Long id, PostRequestDto postDto) {
-        Post foundPost = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("POST NOT FOUND ID:" + id));
-
+        Post foundPost = findByPostId(id);
         foundPost.updateEntity(postDto.getTitle(), postDto.getContent());
-
         return convertToDto(foundPost);
-
-//        return PostResponseDto.builder()
-//                .id(foundPost.getId())
-//                .title(foundPost.getTitle())
-//                .content(foundPost.getContent())
-//                .author(foundPost.getAuthor())
-//                .build();
     }
 
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
+
+    @Transactional(readOnly = true)
+    private Post findByPostId(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("POST NOT FOUND ID:" + id));
+    }
+
 }

@@ -12,8 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.my.worldwave.post.dto.CommentResponseDto.convertToDto;
 
-@Service
+@Transactional
 @RequiredArgsConstructor
+@Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -25,7 +26,6 @@ public class CommentService {
         return convertToDto(foundComment);
     }
 
-    @Transactional
     public Long createComment(Long postId, CommentRequestDto commentRequestDto) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("POST_NOT_FOUND ID:" + postId));
@@ -40,14 +40,12 @@ public class CommentService {
         return savedComment.getId();
     }
 
-    @Transactional
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentRequestDto) {
         Comment foundComment = findCommentById(commentId);
         foundComment.updateEntity(commentRequestDto.getContent());
         return convertToDto(foundComment);
     }
 
-    @Transactional
     public void deleteComment(Long id) {
         Comment foundComment = findCommentById(id);
         commentRepository.delete(foundComment);

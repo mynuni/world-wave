@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.my.worldwave.post.dto.CommentResponseDto.convertToDtoList;
 
 @Getter
 @Builder
@@ -19,6 +22,8 @@ public class PostResponseDto {
     private String author;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
+    private List<CommentResponseDto> comments;
+    private int commentCount;
 
     public static PostResponseDto convertToDto(Post post) {
         return PostResponseDto.builder()
@@ -28,6 +33,8 @@ public class PostResponseDto {
                 .author(post.getAuthor())
                 .createdAt(post.getCreatedAt())
                 .lastUpdatedAt(post.getLastUpdatedAt())
+                .comments(convertToDtoList(post.getComments()))
+                .commentCount(post.getComments().size())
                 .build();
     }
 
