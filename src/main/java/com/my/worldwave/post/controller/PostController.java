@@ -24,13 +24,6 @@ public class PostController {
     private final PostService postService;
     private final LocationUrlBuilder locationUrlBuilder;
 
-//    @GetMapping
-//    public ResponseEntity<List<PostResponseDto>> findAllPosts(@RequestParam(defaultValue = "0") int page,
-//                                                              @RequestParam(defaultValue = "5") int size) {
-//        List<PostResponseDto> posts = postService.findAllPosts(page, size);
-//        return ResponseEntity.ok(posts);
-//    }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         PostResponseDto post = postService.findPostById(id);
