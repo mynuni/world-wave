@@ -30,17 +30,9 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findAllPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-//        Page<Post> postPage = postRepository.findAll(pageable);
         Page<Post> postPage = postRepository.findAllPosts(pageable);
         return postPage.map(PostResponseDto::convertToDto).getContent();
     }
-
-//    @Transactional(readOnly = true)
-//    public List<PostResponseDto> findAllPostsByCountry(String country, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-//        Page<Post> postPage = postRepository.findAllPostsByCountry(country, pageable);
-//        return postPage.map(PostResponseDto::convertToDto).getContent();
-//    }
 
     @Transactional(readOnly = true)
     public Page<PostResponseDto> findAllPostsByCountry(String country, Pageable pageable) {
