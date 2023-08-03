@@ -1,0 +1,172 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+body {
+	background-color: rgb(50, 50, 68);
+}
+
+#svg-container {
+	display: flex;
+	align-items: center;
+	width: 1680px;
+	height: 1050px;
+}
+
+svg path:hover {
+	cursor: pointer;
+	fill: rgb(220, 220, 220);
+	transition: fill 0.2s ease;
+}
+
+svg path {
+	fill: rgb(120, 120, 120);
+}
+
+#main-country-name {
+	position: absolute;
+	color: white;
+	background-color: rgba(0, 0, 0, 0.7);
+	width: fit-content;
+	opacity: 0;
+	padding: 5px;
+	font-size: 1.5rem;
+}
+
+#time {
+	position: absolute;
+	background-color: white;
+	width: fit-content;
+	opacity: 1;
+	padding: 5px;
+	font-size: 1.5rem;
+}
+
+#country-name-wrap {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#detail-container {
+	width: 550px;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+	color: white;
+	max-height: 100vh;
+	overflow-y: auto;
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 9999;
+	display: none;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+#videoContainer {
+	display: flex;
+
+}
+
+#ytplayer {
+	margin: 0 3px 10px 3px;
+	border-radius: 8px;
+}
+
+#detail-country-name {
+	font-size: 32px;
+	font-weight: bold;
+	flex: 1;
+}
+
+#close-sidebar-btn {
+	font-size: 24px;
+	margin-right: 18px;
+	cursor: pointer;
+}
+
+iframe {
+	width: 485px;
+	height: 220px;
+}
+
+#news-icon, #post-write-icon {
+	text-align: left;
+	margin-right: 12px;
+
+}
+
+#detail-title {
+	flex: 1;
+	text-align: left;
+}
+
+.detail-title-wrap {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 30px 0px 10px 0px;
+	background-color: rgba(50, 50, 50, 0.7);
+	font-size: 20px;
+	padding: 15px;
+	border-radius: 12px;
+}
+
+.detail-title-see-more {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.detail-title-wrap .fa-fire-flame-simple {
+	color: red;
+	margin-right: 5px;
+}
+
+.detail-title-wrap .fa-square-plus {
+	font-size: 32px;
+	color: rgba(230, 230, 230, 1);
+	margin-right: 10px;
+}
+
+.news-title,
+.news-content {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.news-title {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	font-size: 24px;
+	white-space: nowrap;
+}
+
+.news-contents {
+	display: flex;
+}
+
+.news-content {
+	font-size: 18px;
+	max-height: 145px;
+	padding-left: 10px;
+	padding-right: 10px;
+
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 6;
+	-webkit-box-orient: vertical;
+}
+
+.news-image img {
+	width: 200px;
+	height: 120px;
+}
