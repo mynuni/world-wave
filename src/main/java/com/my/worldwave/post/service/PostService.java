@@ -6,6 +6,7 @@ import com.my.worldwave.post.entity.Post;
 import com.my.worldwave.post.repository.CommentRepository;
 import com.my.worldwave.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static com.my.worldwave.post.dto.PostResponseDto.convertToDto;
 
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -28,8 +30,22 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findAllPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Post> postPage = postRepository.findAll(pageable);
+//        Page<Post> postPage = postRepository.findAll(pageable);
+        Page<Post> postPage = postRepository.findAllPosts(pageable);
         return postPage.map(PostResponseDto::convertToDto).getContent();
+    }
+
+//    @Transactional(readOnly = true)
+//    public List<PostResponseDto> findAllPostsByCountry(String country, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+//        Page<Post> postPage = postRepository.findAllPostsByCountry(country, pageable);
+//        return postPage.map(PostResponseDto::convertToDto).getContent();
+//    }
+
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> findAllPostsByCountry(String country, Pageable pageable) {
+        Page<Post> postPage = postRepository.findAllPostsByCountry(country, pageable);
+        return postPage.map(PostResponseDto::convertToDto);
     }
 
     @Transactional(readOnly = true)
@@ -43,6 +59,7 @@ public class PostService {
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
                 .author(postDto.getAuthor())
+                .country(postDto.getCountry())
                 .build();
 
         Post savedPost = postRepository.save(newPost);
