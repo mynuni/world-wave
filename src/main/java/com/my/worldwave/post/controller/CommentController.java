@@ -3,6 +3,7 @@ package com.my.worldwave.post.controller;
 import com.my.worldwave.post.dto.CommentRequestDto;
 import com.my.worldwave.post.dto.CommentResponseDto;
 import com.my.worldwave.post.service.CommentService;
+import com.my.worldwave.util.LocationUrlBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.net.URI;
 public class CommentController {
 
     private final CommentService commentService;
+    private final LocationUrlBuilder locationUrlBuilder;
 
     @GetMapping("/{commentId}")
     public ResponseEntity<?> findById(@PathVariable Long postId, @PathVariable Long commentId) {
@@ -27,7 +29,7 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<Long> createComment(@PathVariable Long postId, @RequestBody CommentRequestDto commentRequestDto) {
         Long commentId = commentService.createComment(postId, commentRequestDto);
-        String location = buildLocationUri(commentId);
+        String location = locationUrlBuilder.buildLocationUri(commentId);
         return ResponseEntity.status(HttpStatus.CREATED).location(URI.create(location)).build();
     }
 
@@ -41,14 +43,6 @@ public class CommentController {
     public ResponseEntity<?> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.ok().build();
-    }
-
-    private String buildLocationUri(Long commentId) {
-        return ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{commentId}")
-                .buildAndExpand(commentId)
-                .toUriString();
     }
 
 }
