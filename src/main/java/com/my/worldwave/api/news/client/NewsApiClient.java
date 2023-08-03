@@ -16,6 +16,7 @@ public class NewsApiClient {
     private final String BASE_PATH = "/v2/top-headlines";
     private final WebClient webClient;
     private final String API_KEY;
+    private static final int NUMBER_OF_NEWS_RETURN = 3;
 
     public NewsApiClient(@Value("${news.api.key}") String apiKey) {
         this.API_KEY = apiKey;
@@ -29,7 +30,7 @@ public class NewsApiClient {
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_PATH)
                         .queryParam("country", newsRequestDto.getCountry())
-                        .queryParam("pageSize", newsRequestDto.getPageSize())
+                        .queryParam("pageSize", NUMBER_OF_NEWS_RETURN)
                         .queryParam("apiKey", API_KEY)
                         .build())
                 .retrieve()

@@ -17,7 +17,7 @@ public class YoutubeClient {
     private final String BASE_PATH = "/youtube/v3/videos";
     private final WebClient webClient;
     private final String API_KEY;
-    private static final int NUMBER_OF_VIDEOS_RETURN = 4;
+    private static final int NUMBER_OF_VIDEOS_RETURN = 3;
 
     public YoutubeClient(@Value("${youtube.api.key}") String apiKey) {
         this.API_KEY = apiKey;
