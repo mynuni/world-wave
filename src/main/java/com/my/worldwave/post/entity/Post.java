@@ -20,18 +20,28 @@ public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 50)
     private String title;
+
+    @Column(nullable = false, length = 200)
     private String content;
+
+    @Column(nullable = false, length = 20)
     private String author;
+
+    @Column(nullable = false, length = 2)
+    private String country;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Post(String title, String content, String author) {
+    public Post(String title, String content, String author, String country) {
         this.title = title;
         this.content = content;
         this.author = author;
+        this.country = country;
     }
 
     public void updateEntity(String title, String content) {

@@ -28,7 +28,7 @@ public class CommentService {
 
     public Long createComment(Long postId, CommentRequestDto commentRequestDto) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("POST_NOT_FOUND ID:" + postId));
+                .orElseThrow(() -> new IllegalArgumentException("POST NOT FOUND ID:" + postId));
 
         Comment newComment = Comment.builder()
                 .content(commentRequestDto.getContent())

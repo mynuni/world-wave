@@ -4,13 +4,16 @@ import com.my.worldwave.post.dto.PostRequestDto;
 import com.my.worldwave.post.dto.PostResponseDto;
 import com.my.worldwave.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RequestMapping("/posts")
 @RequiredArgsConstructor
@@ -18,17 +21,24 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @GetMapping
-    public ResponseEntity<List<PostResponseDto>> findAllPosts(@RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "5") int size) {
-        List<PostResponseDto> posts = postService.findAllPosts(page, size);
-        return ResponseEntity.ok(posts);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<PostResponseDto>> findAllPosts(@RequestParam(defaultValue = "0") int page,
+//                                                              @RequestParam(defaultValue = "5") int size) {
+//        List<PostResponseDto> posts = postService.findAllPosts(page, size);
+//        return ResponseEntity.ok(posts);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         PostResponseDto post = postService.findPostById(id);
         return ResponseEntity.ok(post);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<PostResponseDto>> findAllPostsByCountry(String country,
+                            @PageableDefault(size=5, sort="id", direction=Sort.Direction.DESC) Pageable pageable) {
+        Page<PostResponseDto> posts = postService.findAllPostsByCountry(country, pageable);
+        return ResponseEntity.ok(posts);
     }
 
     @PostMapping

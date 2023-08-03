@@ -20,6 +20,7 @@ public class PostResponseDto {
     private String title;
     private String content;
     private String author;
+    private String country;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
     private List<CommentResponseDto> comments;
@@ -31,6 +32,7 @@ public class PostResponseDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .author(post.getAuthor())
+                .country(post.getCountry())
                 .createdAt(post.getCreatedAt())
                 .lastUpdatedAt(post.getLastUpdatedAt())
                 .comments(convertToDtoList(post.getComments()))
