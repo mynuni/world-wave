@@ -138,4 +138,14 @@ $(function() {
         });
     }
 
+    $('#modal-write-post-btn').click(function() {
+        $('#model-write-post').css('display', 'block');
+    });
+
+    $(document).click(function(event) {
+        if (!$('#model-write-post').is(event.target) && $('#model-write-post').has(event.target).length === 0) {
+            $('#model-write-post').css('display', 'none');
+        }
+    });
+
 });
