@@ -1,5 +1,6 @@
 package com.my.worldwave.member.controller;
 
+import com.my.worldwave.auth.resolver.AuthenticationPrincipal;
 import com.my.worldwave.member.dto.LoginDto;
 import com.my.worldwave.member.dto.MemberInfoDto;
 import com.my.worldwave.member.dto.SignUpDto;
@@ -35,10 +36,9 @@ public class MemberController {
     }
 
     @GetMapping("/myinfo")
-    public ResponseEntity<MemberInfoDto> myinfo(@SessionAttribute(name = "authUser", required = false) MemberInfoDto memberInfoDto) {
+    public ResponseEntity<MemberInfoDto> myinfo(@AuthenticationPrincipal MemberInfoDto memberInfoDto) {
 
-        if (memberInfoDto == null) {
-            log.info("SESSION IS NULL");
+        if (memberInfoDto == null || memberInfoDto.getId() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
