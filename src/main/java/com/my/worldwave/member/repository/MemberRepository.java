@@ -1,6 +1,6 @@
 package com.my.worldwave.member.repository;
 
-import com.my.worldwave.member.domain.Member;
+import com.my.worldwave.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,10 +1,10 @@
 package com.my.worldwave.member.service;
 
-import com.my.worldwave.member.domain.Member;
-import com.my.worldwave.member.domain.Role;
 import com.my.worldwave.member.dto.LoginDto;
 import com.my.worldwave.member.dto.MemberInfoDto;
 import com.my.worldwave.member.dto.SignUpDto;
+import com.my.worldwave.member.entity.Member;
+import com.my.worldwave.member.entity.Role;
 import com.my.worldwave.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
