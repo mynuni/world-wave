@@ -1,5 +1,6 @@
 package com.my.worldwave.post.service;
 
+import com.my.worldwave.member.entity.Member;
 import com.my.worldwave.post.dto.PostRequestDto;
 import com.my.worldwave.post.dto.PostResponseDto;
 import com.my.worldwave.post.entity.Post;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,16 +43,16 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostResponseDto findPostById(Long id) {
-        Post foundPost = findByPostId(id);
+    public PostResponseDto findById(Long id) {
+        Post foundPost = findPostById(id);
         return convertToDto(foundPost);
     }
 
-    public Long createPost(PostRequestDto postDto) {
+    public Long createPost(Member member, PostRequestDto postDto) {
         Post newPost = Post.builder()
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
-                .author(postDto.getAuthor())
+                .author(member)
                 .country(postDto.getCountry())
                 .build();
 
@@ -58,20 +60,29 @@ public class PostService {
         return savedPost.getId();
     }
 
-    public PostResponseDto updatePost(Long id, PostRequestDto postDto) {
-        Post foundPost = findByPostId(id);
+    public PostResponseDto updatePost(Member member, Long id, PostRequestDto postDto) {
+        Post foundPost = findPostById(id);
+        checkAuthority(member, foundPost);
         foundPost.updateEntity(postDto.getTitle(), postDto.getContent());
         return convertToDto(foundPost);
     }
 
-    public void deletePost(Long id) {
+    public void deletePost(Member member, Long id) {
+        Post foundPost = findPostById(id);
+        checkAuthority(member, foundPost);
         postRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)
-    private Post findByPostId(Long id) {
+    private Post findPostById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("POST NOT FOUND ID:" + id));
+    }
+
+    private void checkAuthority(Member member, Post post) {
+        if (!post.getAuthor().getEmail().equals(member.getEmail())) {
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
     }
 
 }

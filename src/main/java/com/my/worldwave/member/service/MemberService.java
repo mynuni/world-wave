@@ -47,7 +47,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    private Member findMemberById(Long id) {
+    public Member findMemberById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("MEMBER NOT FOUND"));
     }

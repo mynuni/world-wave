@@ -19,13 +19,15 @@ public class MemberInfoDto implements Serializable {
     // 기타 추가 정보 등
 
     @Builder
-    public MemberInfoDto(String email, String nickname) {
+    public MemberInfoDto(Long id, String email, String nickname) {
+        this.id = id;
         this.email = email;
         this.nickname = nickname;
     }
 
     public static MemberInfoDto convertToDto(Member member) {
         return MemberInfoDto.builder()
+                .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .build();
