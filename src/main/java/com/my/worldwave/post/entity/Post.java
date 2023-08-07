@@ -1,5 +1,6 @@
 package com.my.worldwave.post.entity;
 
+import com.my.worldwave.member.entity.Member;
 import com.my.worldwave.util.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,17 +28,18 @@ public class Post extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String content;
 
-    @Column(nullable = false, length = 20)
-    private String author;
-
     @Column(nullable = false, length = 2)
     private String country;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private Member author;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Post(String title, String content, String author, String country) {
+    public Post(String title, String content, Member author, String country) {
         this.title = title;
         this.content = content;
         this.author = author;
