@@ -1,4 +1,4 @@
-package com.my.worldwave.member.domain;
+package com.my.worldwave.member.entity;
 
 import lombok.Builder;
 import lombok.Getter;

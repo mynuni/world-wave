@@ -1,4 +1,4 @@
-package com.my.worldwave.member.domain;
+package com.my.worldwave.member.entity;
 
 public enum Role {
     MEMBER, ADMIN
