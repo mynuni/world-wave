@@ -24,16 +24,20 @@ public class Member {
     @Column(nullable = false, length = 20)
     private String nickname;
 
+    @Column(nullable = false, length = 2)
+    private String country;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
     // POST, COMMENT 관련 필드
 
     @Builder
-    public Member(String email, String password, String nickname, Role role) {
+    public Member(String email, String password, String nickname, String country, Role role) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.country = country;
         this.role = role;
     }
 

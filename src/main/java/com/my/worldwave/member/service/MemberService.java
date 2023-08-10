@@ -30,6 +30,7 @@ public class MemberService {
                 .email(signUpDto.getEmail())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickname(signUpDto.getNickname())
+                .country(signUpDto.getCountry())
                 .role(Role.MEMBER)
                 .build();
 
@@ -43,7 +44,6 @@ public class MemberService {
 
         validatePassword(loginDto.getPassword(), foundMember.getPassword());
         return convertToDto(foundMember);
-
     }
 
     @Transactional(readOnly = true)
