@@ -18,7 +18,7 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(e.getMessage(), e.getClass().getSimpleName()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(e.getClass().getSimpleName(), e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
