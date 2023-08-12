@@ -1,5 +1,9 @@
 package com.my.worldwave.member.service;
 
+import com.my.worldwave.exception.BadRequestException;
+import com.my.worldwave.exception.member.DuplicateEmailException;
+import com.my.worldwave.exception.member.DuplicateNicknameException;
+import com.my.worldwave.exception.member.PasswordMismatchException;
 import com.my.worldwave.member.dto.LoginDto;
 import com.my.worldwave.member.dto.MemberInfoDto;
 import com.my.worldwave.member.dto.SignUpDto;
@@ -17,7 +21,6 @@ import javax.persistence.EntityNotFoundException;
 import static com.my.worldwave.member.dto.MemberInfoDto.convertToDto;
 
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class MemberService {
@@ -25,7 +28,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void signUp(SignUpDto signUpDto) {
+        validateSignUpDto(signUpDto);
         Member newUser = Member.builder()
                 .email(signUpDto.getEmail())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
@@ -42,7 +47,10 @@ public class MemberService {
         Member foundMember = memberRepository.findByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("MEMBER NOT FOUND"));
 
-        validatePassword(loginDto.getPassword(), foundMember.getPassword());
+        if (!validatePassword(loginDto.getPassword(), foundMember.getPassword())) {
+            throw new BadRequestException("아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
+
         return convertToDto(foundMember);
     }
 
@@ -52,9 +60,22 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("MEMBER NOT FOUND"));
     }
 
-    private void validatePassword(String inputPassword, String storedPassword) {
-        if (!passwordEncoder.matches(inputPassword, storedPassword)) {
-            throw new RuntimeException("WRONG INFORMATION");
+    private boolean validatePassword(String inputPassword, String storedPassword) {
+        return passwordEncoder.matches(inputPassword, storedPassword);
+    }
+
+    @Transactional(readOnly = true)
+    private void validateSignUpDto(SignUpDto signUpDto) {
+        if (!signUpDto.getPassword().equals(signUpDto.getPasswordCheck())) {
+            throw new PasswordMismatchException();
+        }
+
+        if (memberRepository.existsByEmail(signUpDto.getEmail())) {
+            throw new DuplicateEmailException();
+        }
+
+        if (memberRepository.existsByNickname(signUpDto.getNickname())) {
+            throw new DuplicateNicknameException();
         }
     }
 
