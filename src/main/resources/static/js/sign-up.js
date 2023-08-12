@@ -159,7 +159,8 @@
                     alert("회원가입이 완료되었습니다.");
                     window.location.href = "/";
                 },
-                error: function() {
+                error: function(jqXHR) {
+                    // 내용에 따른 에러 상황 처리할 것
                     console.error("SIGN UP ERROR");
                 }
             });
