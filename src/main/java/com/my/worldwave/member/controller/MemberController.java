@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(SignUpDto signUpDto) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDto signUpDto) {
         memberService.signUp(signUpDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
