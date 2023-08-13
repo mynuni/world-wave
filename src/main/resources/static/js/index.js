@@ -1,6 +1,36 @@
 $(function() {
 	let isDetailVisible = false;
 
+	$.ajax({
+        type: "GET",
+        url: "/auth/myinfo",
+        success: function (memberInfo) {
+        let isLoggedIn = memberInfo != null && memberInfo.id != null;
+        if (isLoggedIn) {
+            $("#nav-signin-btn, #nav-signup-btn").hide();
+            $("#nav-userinfo-btn").show();
+        } else {
+            $("#nav-signin-btn, #nav-signup-btn").show();
+            $("#nav-userinfo-btn").hide();
+        }},
+        error: function () {
+            $("#nav-signin-btn, #nav-signup-btn").show();
+            $("#nav-userinfo-btn").hide();
+        }
+    });
+
+    $("#nav-logo").on("click", function () {
+        window.location.href = "/";
+    });
+
+    $("#nav-signin-btn").on("click", function () {
+        window.location.href = "/login.html";
+    });
+
+    $("#nav-signup-btn").on("click", function () {
+        window.location.href = "/sign-up.html";
+    });
+
 	function toggleDetail() {
 		if (isDetailVisible) {
 			$("#detail-container").fadeOut();

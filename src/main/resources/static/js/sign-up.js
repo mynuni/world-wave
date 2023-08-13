@@ -137,9 +137,10 @@
 
         $(".signup-form").submit(function(event) {
             event.preventDefault();
-            const email = $('#email').val();;
-            const password = $('#password').val();;
-            const nickname = $('#nickname').val();;
+            const email = $('#email').val();
+            const password = $('#password').val();
+            const passwordCheck = $('#password-check').val();
+            const nickname = $('#nickname').val();
             const countryCode = $('#country').data("country-code");
 
             if (!validateForm()) {
@@ -152,6 +153,7 @@
                 data: {
                     email: email,
                     password: password,
+                    passwordCheck: passwordCheck,
                     nickname: nickname,
                     country: countryCode
                 },
