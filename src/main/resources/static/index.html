@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sign-up.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://kit.fontawesome.com/5314583eb7.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <meta charset="UTF-8">
     <title>WORLD WAVE</title>
 </head>
@@ -18,7 +21,6 @@
         </div>
     </div>
 </nav>
-
 <div id="svg-container">
     <svg id="allSvg" baseprofile="tiny" fill="white" stroke="black"
          stroke-linecap="round" stroke-linejoin="round" version="1.2"
@@ -953,6 +955,19 @@
 <div id="main-country-name">
     <p id="country-name-area"></p>
 </div>
+
+<div id="login-modal-overlay">
+    <div id="login-modal">
+        <iframe id="login-modal-page" src="login.html" frameborder="0"></iframe>
+    </div>
+</div>
+
+<div id="signup-modal-overlay">
+    <div id="signup-modal">
+        <iframe id="signup-modal-page" src="sign-up.html" frameborder="0"></iframe>
+    </div>
+</div>
+
 <div id="detail-container">
     <div id="country-name-wrap">
         <i id="close-sidebar-btn" class="fa-solid fa-arrow-left"></i>

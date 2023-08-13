@@ -51,6 +51,7 @@
         }
 
         function checkEmailDuplicate(email) {
+            console.log("이메일 중복 검사");
             $.ajax({
                 type: "GET",
                 url: "/auth/check-email",
@@ -136,6 +137,7 @@
         }
 
         $(".signup-form").submit(function(event) {
+            console.log("회원가입 폼 전송");
             event.preventDefault();
             const email = $('#email').val();
             const password = $('#password').val();
@@ -159,7 +161,7 @@
                 },
                 success: function(response) {
                     alert("회원가입이 완료되었습니다.");
-                    window.location.href = "/";
+                    window.parent.location.reload();
                 },
                 error: function(jqXHR) {
                     // 내용에 따른 에러 상황 처리할 것

@@ -23,13 +23,13 @@ $(function() {
         window.location.href = "/";
     });
 
-    $("#nav-signin-btn").on("click", function () {
-        window.location.href = "/login.html";
-    });
+//    $("#nav-signin-btn").on("click", function () {
+//        window.location.href = "/login.html";
+//    });
 
-    $("#nav-signup-btn").on("click", function () {
-        window.location.href = "/sign-up.html";
-    });
+//    $("#nav-signup-btn").on("click", function () {
+//        window.location.href = "/sign-up.html";
+//    });
 
 	function toggleDetail() {
 		if (isDetailVisible) {
@@ -175,6 +175,34 @@ $(function() {
     $(document).click(function(event) {
         if (!$('#model-write-post').is(event.target) && $('#model-write-post').has(event.target).length === 0) {
             $('#model-write-post').css('display', 'none');
+        }
+    });
+
+        $('#nav-signin-btn').on('click', function() {
+            $('#login-modal-overlay').css('display', 'flex').hide().fadeIn();
+            $('#login-modal').css('display', 'none').fadeIn();
+        });
+
+        $('#login-modal-overlay').on('click', function(e) {
+            if (e.target === this) {
+                $('#login-modal-overlay').fadeOut(function() {
+                    $(this).css('display', 'none');
+                });
+                $('#login-modal').fadeOut();
+            }
+        });
+
+    $('#nav-signup-btn').on('click', function() {
+        $('#signup-modal-overlay').css('display', 'flex').hide().fadeIn();
+        $('#signup-modal').css('display', 'none').fadeIn();
+    });
+
+    $('#signup-modal-overlay').on('click', function(e) {
+        if (e.target === this) {
+            $('#signup-modal-overlay').fadeOut(function() {
+                $(this).css('display', 'none');
+            });
+            $('#signup-modal').fadeOut();
         }
     });
 
