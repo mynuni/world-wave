@@ -156,7 +156,7 @@ $(function() {
                 data.content.forEach(function(post) {
                     let postHtml = "<div class='post'>";
                     postHtml += "<div class='post-title'>" + post.title + "</div>";
-                    postHtml += "<div class='post-author'>" + post.author + "</div>";
+                    postHtml += "<div class='post-author'>" + post.author.nickname + "</div>";
                     postHtml += "<div class='post-date'>" + post.createdAt + "</div>";
                     postHtml += "</div>";
                     $("#post-container").append(postHtml);
