@@ -1,35 +1,34 @@
 $(function() {
 	let isDetailVisible = false;
+	let accessToken = sessionStorage.getItem("accessToken");
+	console.log("FROM SESSION:" + accessToken);
 
-	$.ajax({
-        type: "GET",
-        url: "/auth/myinfo",
-        success: function (memberInfo) {
-        let isLoggedIn = memberInfo != null && memberInfo.id != null;
-        if (isLoggedIn) {
-            $("#nav-signin-btn, #nav-signup-btn").hide();
-            $("#nav-userinfo-btn").show();
-        } else {
-            $("#nav-signin-btn, #nav-signup-btn").show();
-            $("#nav-userinfo-btn").hide();
-        }},
-        error: function () {
-            $("#nav-signin-btn, #nav-signup-btn").show();
-            $("#nav-userinfo-btn").hide();
-        }
-    });
+    if (accessToken) {
+        $.ajax({
+            type: "GET",
+            url: "/auth/myinfo",
+            headers: {
+                "Authorization": 'Bearer ' + accessToken
+            },
+            success: function (response) {
+            let isLoggedIn = response != null;
+            if (isLoggedIn) {
+                $("#nav-signin-btn, #nav-signup-btn").hide();
+                $("#nav-userinfo-btn").show();
+            } else {
+                $("#nav-signin-btn, #nav-signup-btn").show();
+                $("#nav-userinfo-btn").hide();
+            }},
+            error: function () {
+                $("#nav-signin-btn, #nav-signup-btn").show();
+                $("#nav-userinfo-btn").hide();
+            }
+        });
+    }
 
     $("#nav-logo").on("click", function () {
         window.location.href = "/";
     });
-
-//    $("#nav-signin-btn").on("click", function () {
-//        window.location.href = "/login.html";
-//    });
-
-//    $("#nav-signup-btn").on("click", function () {
-//        window.location.href = "/sign-up.html";
-//    });
 
 	function toggleDetail() {
 		if (isDetailVisible) {
@@ -206,32 +205,45 @@ $(function() {
         }
     });
 
-            $(".login-form").on("submit", function (event) {
-                event.preventDefault();
-                let email = $("#login-email").val();
-                let password = $("#login-password").val();
+    $("#login-submit-btn").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/auth/login",
+            contentType: "application/json",
+            data: JSON.stringify({
+                email: $("#login-email").val(),
+                password: $("#login-password").val()
+            }),
+            success: function (tokenPair) {
+                sessionStorage.setItem("accessToken", tokenPair.accessToken);
+                sessionStorage.setItem("refreshToken", tokenPair.refreshToken);
+                window.parent.location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error("LOGIN FAIL" + error);
+            }
+        });
+    });
 
-                $.ajax({
-                    type: "POST",
-                    url: "/auth/login",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        email: email,
-                        password: password
-                    }),
-                    success: function (response) {
-                        let accessToken = response.accessToken;
-                        let refreshToken = response.refreshToken;
-                        console.log(accessToken);
-                        console.log(refreshToken);
-                        sessionStorage.setItem("accessToken", accessToken);
-                        sessionStorage.setItem("refreshToken", refreshToken);
-                        window.parent.location.reload();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("LOGIN FAIL" + error);
-                    }
-                });
-            });
+    $("#logout-btn").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/auth/logout",
+            contentType: "application/json",
+            data: JSON.stringify({
+                accessToken: sessionStorage.getItem("accessToken"),
+                refreshToken: sessionStorage.getItem("refreshToken")
+            }),
+            success: function () {
+                sessionStorage.removeItem("accessToken");
+                sessionStorage.removeItem("refreshToken");
+                accessToken = null;
+                window.parent.location.reload();
+            },
+            error: function () {
+                console.error("LOGOUT FAIL");
+            }
+        });
+    });
 
 });
