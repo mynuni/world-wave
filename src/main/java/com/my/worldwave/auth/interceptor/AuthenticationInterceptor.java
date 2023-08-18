@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Slf4j
+@Deprecated
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override

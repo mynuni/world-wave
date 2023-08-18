@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Slf4j
+@Deprecated
 public class AuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
