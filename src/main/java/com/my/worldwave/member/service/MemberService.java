@@ -31,15 +31,15 @@ public class MemberService {
     @Transactional
     public void signUp(SignUpDto signUpDto) {
         validateSignUpDto(signUpDto);
-        Member newUser = Member.builder()
+        Member newMember = Member.builder()
                 .email(signUpDto.getEmail())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickname(signUpDto.getNickname())
                 .country(signUpDto.getCountry())
-                .role(Role.MEMBER)
+                .role(Role.USER)
                 .build();
 
-        memberRepository.save(newUser);
+        memberRepository.save(newMember);
     }
 
     @Transactional(readOnly = true)
