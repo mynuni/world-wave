@@ -207,6 +207,7 @@ nav {
 }
 
 #nav-userinfo-btn {
+    display: none;
     position: fixed;
     right: 5%;
     font-size: 32px;
@@ -235,11 +236,59 @@ nav {
 }
 
 #login-modal {
+    display: flex;
+    width: 300px;
+    height: 300px;
     background-color: white;
     padding: 20px;
     border-radius: 5px;
     top: 50%;
     left: 50%;
+}
+
+#login-modal .login-form {
+    width: 100%;
+    height: 100%;
+}
+
+#login-title {
+    padding: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#login-email, #login-password {
+    margin: 12px 10px;
+    padding: 10px;
+    width: 260px;
+}
+
+#login-modal-footer {
+    display: flex;
+    justify-content: space-around;
+    padding: 14px;
+    font-size: 14px;
+}
+
+#login-modal-footer div {
+    cursor: pointer;
+    padding: 2px;
+}
+
+#login-submit-btn {
+    font-size: 16px;
+    display: block;
+    width: 285px;
+    padding: 10px;
+    margin: 12px 10px;
+    color: white;
+    cursor: pointer;
+    background-color: rgba(45, 62, 80, 1);
+}
+
+#login-submit-btn:active {
+    background-color: rgba(45, 62, 80, 0.97);
 }
 
 #signup-modal-overlay {
