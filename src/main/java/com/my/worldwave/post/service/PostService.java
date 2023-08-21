@@ -1,6 +1,7 @@
 package com.my.worldwave.post.service;
 
 import com.my.worldwave.member.entity.Member;
+import com.my.worldwave.post.dto.PageRequestDto;
 import com.my.worldwave.post.dto.PostRequestDto;
 import com.my.worldwave.post.dto.PostResponseDto;
 import com.my.worldwave.post.entity.Post;
@@ -27,18 +28,17 @@ import static com.my.worldwave.post.dto.PostResponseDto.convertToDto;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
-    public List<PostResponseDto> findAllPosts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+    public List<PostResponseDto> findAllPosts(PageRequestDto pageRequestDto) {
+        Pageable pageable = pageRequestDto.toPageable();
         Page<Post> postPage = postRepository.findAllPosts(pageable);
         return postPage.map(PostResponseDto::convertToDto).getContent();
     }
 
     @Transactional(readOnly = true)
-    public Page<PostResponseDto> findAllPostsByCountry(String country, Pageable pageable) {
-        Page<Post> postPage = postRepository.findAllPostsByCountry(country, pageable);
+    public Page<PostResponseDto> findAllPostsByCountry(String country, PageRequestDto pageRequestDto) {
+        Page<Post> postPage = postRepository.findAllPostsByCountry(country, pageRequestDto.toPageable());
         return postPage.map(PostResponseDto::convertToDto);
     }
 
@@ -60,14 +60,14 @@ public class PostService {
         return savedPost.getId();
     }
 
-    public PostResponseDto updatePost(Member member, Long id, PostRequestDto postDto) {
+    public PostResponseDto updatePost(Long id, Member member, PostRequestDto postDto) {
         Post foundPost = findPostById(id);
         checkAuthority(member, foundPost);
         foundPost.updateEntity(postDto.getTitle(), postDto.getContent());
         return convertToDto(foundPost);
     }
 
-    public void deletePost(Member member, Long id) {
+    public void deletePost(Long id, Member member) {
         Post foundPost = findPostById(id);
         checkAuthority(member, foundPost);
         postRepository.deleteById(id);
@@ -80,7 +80,7 @@ public class PostService {
     }
 
     private void checkAuthority(Member member, Post post) {
-        if (!post.getAuthor().getEmail().equals(member.getEmail())) {
+        if (!post.getAuthor().getId().equals(member.getId())) {
             throw new AccessDeniedException("ACCESS DENIED");
         }
     }
