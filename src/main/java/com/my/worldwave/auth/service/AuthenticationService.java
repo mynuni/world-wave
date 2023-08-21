@@ -2,6 +2,7 @@ package com.my.worldwave.auth.service;
 
 import com.my.worldwave.auth.dto.RefreshTokenResponse;
 import com.my.worldwave.auth.dto.TokenPair;
+import com.my.worldwave.exception.member.AuthenticationFailureException;
 import com.my.worldwave.member.dto.LoginDto;
 import com.my.worldwave.security.JwtTokenService;
 import com.my.worldwave.util.RedisService;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -26,14 +28,17 @@ public class AuthenticationService {
 
     public TokenPair login(LoginDto loginDto) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-        Authentication authenticate = authenticationManager.authenticate(authentication);
 
-        String email = authenticate.getName();
-        String accessToken = jwtTokenService.generateAccessToken(email, authenticate.getAuthorities());
-        String refreshToken = jwtTokenService.generateRefreshToken(email);
-        redisService.saveRefreshToken(refreshToken, email);
-
-        return new TokenPair(accessToken, refreshToken);
+        try {
+            Authentication authenticate = authenticationManager.authenticate(authentication);
+            String email = authenticate.getName();
+            String accessToken = jwtTokenService.generateAccessToken(email, authenticate.getAuthorities());
+            String refreshToken = jwtTokenService.generateRefreshToken(email);
+            redisService.saveRefreshToken(refreshToken, email);
+            return new TokenPair(accessToken, refreshToken);
+        } catch (AuthenticationException e) {
+            throw new AuthenticationFailureException();
+        }
     }
 
     public void logout(TokenPair tokenPair) {

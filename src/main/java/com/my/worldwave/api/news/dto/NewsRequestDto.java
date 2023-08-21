@@ -12,17 +12,11 @@ public class NewsRequestDto {
     private int pageSize;
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        NewsRequestDto newsRequestDto = (NewsRequestDto) obj;
-        return Objects.equals(this.country, newsRequestDto.country) && this.pageSize == newsRequestDto.pageSize;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NewsRequestDto that = (NewsRequestDto) o;
+        return pageSize == that.pageSize && Objects.equals(country, that.country);
     }
 
     @Override

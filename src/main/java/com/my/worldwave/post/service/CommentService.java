@@ -1,5 +1,8 @@
 package com.my.worldwave.post.service;
 
+import com.my.worldwave.exception.post.CommentNotFoundException;
+import com.my.worldwave.exception.post.PostNotFoundException;
+import com.my.worldwave.member.entity.Member;
 import com.my.worldwave.post.dto.CommentRequestDto;
 import com.my.worldwave.post.dto.CommentResponseDto;
 import com.my.worldwave.post.entity.Comment;
@@ -7,6 +10,7 @@ import com.my.worldwave.post.entity.Post;
 import com.my.worldwave.post.repository.CommentRepository;
 import com.my.worldwave.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,18 +25,18 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional(readOnly = true)
-    public CommentResponseDto findById(Long id) {
-        Comment foundComment = findCommentById(id);
-        return convertToDto(foundComment);
+    public Comment findById(Long id) {
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new CommentNotFoundException(id));
     }
 
-    public Long createComment(Long postId, CommentRequestDto commentRequestDto) {
+    public Long createComment(Long postId, Member member, CommentRequestDto commentRequestDto) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("POST NOT FOUND ID:" + postId));
+                .orElseThrow(() -> new PostNotFoundException(postId));
 
         Comment newComment = Comment.builder()
                 .content(commentRequestDto.getContent())
-                .author(commentRequestDto.getAuthor())
+                .author(member)
                 .post(post)
                 .build();
 
@@ -40,21 +44,23 @@ public class CommentService {
         return savedComment.getId();
     }
 
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentRequestDto) {
-        Comment foundComment = findCommentById(commentId);
+    public CommentResponseDto updateComment(Long commentId, Member member, CommentRequestDto commentRequestDto) {
+        Comment foundComment = findById(commentId);
+        checkAuthority(member, foundComment);
         foundComment.updateEntity(commentRequestDto.getContent());
         return convertToDto(foundComment);
     }
 
-    public void deleteComment(Long id) {
-        Comment foundComment = findCommentById(id);
+    public void deleteComment(Long id, Member member) {
+        Comment foundComment = findById(id);
+        checkAuthority(member, foundComment);
         commentRepository.delete(foundComment);
     }
 
-    @Transactional(readOnly = true)
-    private Comment findCommentById(Long id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("COMMENT NOT FOUND ID:" + id));
+    private void checkAuthority(Member member, Comment comment) {
+        if (!comment.getAuthor().getId().equals(member.getId())) {
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
     }
 
 }

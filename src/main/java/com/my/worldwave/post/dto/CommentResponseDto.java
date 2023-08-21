@@ -18,7 +18,8 @@ public class CommentResponseDto {
     private Long id;
     private Long postId;
     private String content;
-    private String author;
+    private Long authorId;
+    private String authorNickname;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
 
@@ -33,10 +34,13 @@ public class CommentResponseDto {
                 .id(comment.getId())
                 .postId(comment.getPost().getId())
                 .content(comment.getContent())
-                .author(comment.getAuthor())
+                .authorId(comment.getAuthor().getId())
+                .authorNickname(comment.getAuthor().getNickname())
                 .createdAt(comment.getCreatedAt())
                 .lastUpdatedAt(comment.getLastUpdatedAt())
                 .build();
     }
+
+    
 
 }

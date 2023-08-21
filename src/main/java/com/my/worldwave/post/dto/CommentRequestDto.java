@@ -9,6 +9,4 @@ import lombok.*;
 @Builder
 public class CommentRequestDto {
     private String content;
-    private String author;
-    private String country;
 }

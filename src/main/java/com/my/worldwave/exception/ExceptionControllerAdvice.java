@@ -1,5 +1,6 @@
 package com.my.worldwave.exception;
 
+import com.my.worldwave.exception.member.AuthenticationFailureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,16 @@ public class ExceptionControllerAdvice {
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responses);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(e.getClass().getSimpleName(), e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthenticationFailureException.class)
+    public ResponseEntity<ExceptionResponse> handleAuthenticationFailException(AuthenticationFailureException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(e.getClass().getSimpleName(), e.getMessage()));
     }
 
 }

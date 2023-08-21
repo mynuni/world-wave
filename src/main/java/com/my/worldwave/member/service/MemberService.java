@@ -43,28 +43,6 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberInfoDto login(LoginDto loginDto) {
-        Member foundMember = memberRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("MEMBER NOT FOUND"));
-
-        if (!validatePassword(loginDto.getPassword(), foundMember.getPassword())) {
-            throw new BadRequestException("아이디 또는 비밀번호가 올바르지 않습니다.");
-        }
-
-        return convertToDto(foundMember);
-    }
-
-    @Transactional(readOnly = true)
-    public Member findMemberById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("MEMBER NOT FOUND"));
-    }
-
-    private boolean validatePassword(String inputPassword, String storedPassword) {
-        return passwordEncoder.matches(inputPassword, storedPassword);
-    }
-
-    @Transactional(readOnly = true)
     private void validateSignUpDto(SignUpDto signUpDto) {
         if (!signUpDto.getPassword().equals(signUpDto.getPasswordCheck())) {
             throw new PasswordMismatchException();

@@ -1,18 +1,16 @@
 package com.my.worldwave.post.service;
 
+import com.my.worldwave.exception.post.PostNotFoundException;
 import com.my.worldwave.member.entity.Member;
 import com.my.worldwave.post.dto.PageRequestDto;
 import com.my.worldwave.post.dto.PostRequestDto;
 import com.my.worldwave.post.dto.PostResponseDto;
 import com.my.worldwave.post.entity.Post;
-import com.my.worldwave.post.repository.CommentRepository;
 import com.my.worldwave.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +74,7 @@ public class PostService {
     @Transactional(readOnly = true)
     private Post findPostById(Long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("POST NOT FOUND ID:" + id));
+                .orElseThrow(() -> new PostNotFoundException(id));
     }
 
     private void checkAuthority(Member member, Post post) {
