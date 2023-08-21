@@ -11,7 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Configuration
+//@Configuration
+@Deprecated
 public class AuthenticationConfig implements WebMvcConfigurer {
 
     @Override
