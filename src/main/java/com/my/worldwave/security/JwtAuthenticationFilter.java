@@ -1,5 +1,6 @@
 package com.my.worldwave.security;
 
+import com.my.worldwave.exception.member.AccessTokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -23,18 +24,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenService jwtTokenService;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractTokenFromRequest(request);
-
-        if (token != null && jwtTokenService.isValidToken(token)) {
-            Authentication authentication = jwtAuthenticationProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try{
+            if (token != null && jwtTokenService.isValidToken(token)) {
+                Authentication authentication = jwtAuthenticationProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (AccessTokenExpiredException e) {
+            jwtAuthenticationEntryPoint.commence(request, response, e);
+            return;
         }
 
         filterChain.doFilter(request, response);
-
     }
 
     private String extractTokenFromRequest(HttpServletRequest request) {

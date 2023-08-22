@@ -1,7 +1,9 @@
 package com.my.worldwave.security;
 
+import com.my.worldwave.exception.member.AccessTokenExpiredException;
 import com.my.worldwave.util.RedisService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -89,9 +91,8 @@ public class JwtTokenService {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (Exception e) {
-            // 예외 처리 마저 할 것
-            throw new RuntimeException(e);
+        } catch (ExpiredJwtException e) {
+            throw new AccessTokenExpiredException();
         }
     }
 

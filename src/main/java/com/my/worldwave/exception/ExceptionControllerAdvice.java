@@ -1,6 +1,7 @@
 package com.my.worldwave.exception;
 
 import com.my.worldwave.exception.member.AuthenticationFailureException;
+import com.my.worldwave.exception.member.RefreshTokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +40,13 @@ public class ExceptionControllerAdvice {
     }
 
     @ExceptionHandler(AuthenticationFailureException.class)
-    public ResponseEntity<ExceptionResponse> handleAuthenticationFailException(AuthenticationFailureException e) {
+    public ResponseEntity<ExceptionResponse> handleAuthenticationFailureException(AuthenticationFailureException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(e.getClass().getSimpleName(), e.getMessage()));
+    }
+
+    @ExceptionHandler(RefreshTokenExpiredException.class)
+    public ResponseEntity<ExceptionResponse> handleRefreshTokenExpiredException(RefreshTokenExpiredException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ExceptionResponse(e.getClass().getSimpleName(), e.getMessage()));
     }
 
 }
