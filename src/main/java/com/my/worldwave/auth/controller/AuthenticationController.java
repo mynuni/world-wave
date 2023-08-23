@@ -6,9 +6,11 @@ import com.my.worldwave.auth.dto.TokenPair;
 import com.my.worldwave.auth.service.AuthenticationService;
 import com.my.worldwave.member.dto.LoginDto;
 import com.my.worldwave.member.repository.MemberRepository;
+import com.my.worldwave.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -27,8 +29,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody TokenPair tokenPair) {
-        authenticationService.logout(tokenPair);
+    public ResponseEntity<?> logout(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody TokenPair tokenPair) {
+        authenticationService.logout(tokenPair, userDetails.getUsername());
         return ResponseEntity.ok().build();
     }
 
@@ -39,15 +41,13 @@ public class AuthenticationController {
     }
 
     @GetMapping("/check-email")
-    public ResponseEntity<?> checkEmailExists(String email) {
-        log.info("EMAIL FROM PARAM = {}", email);
+    public ResponseEntity<Boolean> checkEmailExists(String email) {
         boolean exists = memberRepository.existsByEmail(email);
-        log.info("EMAIL EXISTS = {}", exists);
         return ResponseEntity.ok(exists);
     }
 
     @GetMapping("/check-nickname")
-    public ResponseEntity<?> checkNicknameExists(String nickname) {
+    public ResponseEntity<Boolean> checkNicknameExists(String nickname) {
         boolean exists = memberRepository.existsByNickname(nickname);
         return ResponseEntity.ok(exists);
     }

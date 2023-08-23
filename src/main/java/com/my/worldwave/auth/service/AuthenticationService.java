@@ -3,6 +3,7 @@ package com.my.worldwave.auth.service;
 import com.my.worldwave.auth.dto.RefreshTokenResponse;
 import com.my.worldwave.auth.dto.TokenPair;
 import com.my.worldwave.exception.member.AuthenticationFailureException;
+import com.my.worldwave.exception.member.RefreshTokenExpiredException;
 import com.my.worldwave.member.dto.LoginDto;
 import com.my.worldwave.security.JwtTokenService;
 import com.my.worldwave.util.RedisService;
@@ -28,7 +29,6 @@ public class AuthenticationService {
 
     public TokenPair login(LoginDto loginDto) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-
         try {
             Authentication authenticate = authenticationManager.authenticate(authentication);
             String email = authenticate.getName();
@@ -41,20 +41,22 @@ public class AuthenticationService {
         }
     }
 
-    public void logout(TokenPair tokenPair) {
-        redisService.addToBlacklist(tokenPair.getAccessToken(), "");
+    public void logout(TokenPair tokenPair, String email) {
+        redisService.addToBlacklist(tokenPair.getAccessToken(), email);
         redisService.deleteRefreshToken(tokenPair.getRefreshToken());
     }
 
     public RefreshTokenResponse refreshToken(String refreshToken) {
-        if (!jwtTokenService.isExpired(refreshToken) && redisService.exists(refreshToken)) {
-            String username = jwtTokenService.extractUsernameFromToken(refreshToken);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            String accessToken = jwtTokenService.generateAccessToken(userDetails.getUsername(), userDetails.getAuthorities());
-
-            return new RefreshTokenResponse(accessToken);
+        try {
+            if (!jwtTokenService.isExpired(refreshToken) && redisService.exists(refreshToken)) {
+                String username = jwtTokenService.extractUsernameFromToken(refreshToken);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                String accessToken = jwtTokenService.generateAccessToken(userDetails.getUsername(), userDetails.getAuthorities());
+                return new RefreshTokenResponse(accessToken);
+            }
+        } catch (Exception e) {
+            throw new RefreshTokenExpiredException();
         }
-
         return null;
     }
 
