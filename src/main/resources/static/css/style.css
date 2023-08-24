@@ -405,13 +405,12 @@ nav {
     font-size: 40px;
 }
 
-.post-contents-container {
+.post-contents-container, .comment-contents-container {
     margin-left: 10px;
 }
 
 .post-author {
     font-size: 20px;
-    margin-bottom: 5px;
 }
 
 .post-title {
@@ -422,7 +421,25 @@ nav {
 .post-date {
     color: rgb(180, 180, 180);
     font-size: 16px;
-    margin-bottom: 5px;
+    margin-left: 8px;
+}
+
+.post-modify-btn, .post-delete-btn {
+    color: white;
+    padding: 4px 8px;
+    font-size: 14px;
+    margin-left: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.post-modify-btn {
+    background-color: grey;
+}
+
+.post-delete-btn {
+    border: 1px solid grey;
+    background-color: black;
 }
 
 .pagination {
@@ -490,13 +507,22 @@ nav {
 }
 
 .post-write-btn-group {
-    padding: 8px;
+    padding: 6px 8px;
     color: white;
     width: 50px;
-    border-radius: 12px;
+    border-radius: 8px;
     margin: 4px;
     text-align: center;
     cursor: pointer;
+}
+
+.post-title-wrap, .comment-title-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.post-title-wrap {
+    margin-bottom: 8px;
 }
 
 #post-write-btn {
@@ -504,11 +530,11 @@ nav {
     margin-right: 10px;
 }
 
-#post-write-submit-btn {
+#post-write-submit-btn, .comment-submit-btn {
     background-color: rgb(42, 169, 224);
 }
 
-#post-write-cancel-btn {
+#post-write-cancel-btn, .comment-cancel-btn {
     background-color: rgb(40, 40, 40);
     margin-right: 4px;
 }
@@ -520,5 +546,117 @@ nav {
     background-color: black;
     padding: 8px;
     border-radius: 8px;
+    background-color: rgb(40, 40, 40);
+}
+
+.post-comments {
+    display: none;
+}
+
+.post-comments-container {
+    margin-left: 50px;
+}
+
+.comment-dropdown{
+    border-radius: 12px;
+    width: 95px;
+    justify-content: center;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    color: white;
+    background-color: rgb(42, 169, 224);
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.comment {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.comment .comment-date {
+    color: rgb(180, 180, 180);
+    font-size: 14px;
+    margin-left: 6px;
+}
+
+.comment-profile-img i {
+    font-size: 28px;
+}
+
+.comment-author, .comment-content {
+    font-size: 16px;
+}
+
+.comment-content {
+    margin: 5px 0 5px 0;
+}
+
+.comment-form-btn {
+    cursor: pointer;
+}
+
+.comment-form-container {
+    display: none;
+}
+
+.comment-input {
+    background-color: rgb(40, 40, 40);
+    margin: 8px 0;
+    font-size: 16px;
+    color: white;
+    padding: 8px;
+    border: 1px solid white;
+    border-radius: 8px;
+}
+
+.comment-submit-btn, .comment-cancel-btn {
+    color: white;
+    border-radius: 8px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+.comment-cancel-btn {
+    border: 1px solid grey;
+    margin-left: 6px;
+}
+
+.comment-btn-group {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.post-modify-mode {
+    background-color: black;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.post-modify-btn-container {
+    display: flex;
+    justify-content: right;
+    margin-top: 14px;
+}
+
+.post-modify-btn-container div {
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 4px 12px;
+}
+
+#post-modify-submit-btn {
+    background-color: rgb(42, 169, 224);
+}
+
+#post-modify-cancel-btn {
+    border: 1px solid grey;
+    margin-left: 10px;
     background-color: rgb(40, 40, 40);
 }

@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/sign-up.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://kit.fontawesome.com/5314583eb7.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <meta charset="UTF-8">
@@ -14,10 +14,17 @@
 <nav>
     <div id="nav-logo">WORLD WAVE</div>
     <div id="nav-btn-group">
-        <button id="nav-signin-btn" type="button">SIGN IN</button>
-        <button id="nav-signup-btn" type="button">SIGN UP</button>
+        <button class="nav-btn" id="nav-signin-btn" type="button">로그인</button>
+        <button class="nav-btn" id="nav-signup-btn" type="button">회원가입</button>
         <div id="nav-user-info-group">
             <i id="nav-userinfo-btn" class="fa-solid fa-circle-user"></i>
+            <div class="nav-userinfo-nickname" id="nav-userinfo-nickname"></div>
+            <div id="user-info-dropdown">
+                <div class="nav-userinfo-nickname"></div>
+                <div>Feeds</div>
+                <div>마이페이지</div>
+                <div id="logout-btn">로그아웃</div>
+            </div>
         </div>
     </div>
 </nav>
@@ -958,16 +965,52 @@
 
 <div id="login-modal-overlay">
     <div id="login-modal">
-        <iframe id="login-modal-page" src="login.html" frameborder="0"></iframe>
+        <form class="login-form">
+            <div id="logo"></div>
+            <div id="login-title">로그인</div>
+            <div id="email-wrap">
+                <input id="login-email" name="email" type="text" placeholder="Email">
+            </div>
+            <div id="password-wrap">
+                <input id="login-password" name="password" type="password" placeholder="Password">
+            </div>
+            <button id="login-submit-btn" type="button">로그인</button>
+            <div id="login-modal-footer">
+                <div id="footer-find-email">아이디 찾기</div>
+                <div id="footer-find-password">비밀번호 찾기</div>
+                <div id="footer-signup">회원가입</div>
+            </div>
+        </form>
     </div>
 </div>
-
 <div id="signup-modal-overlay">
     <div id="signup-modal">
-        <iframe id="signup-modal-page" src="sign-up.html" frameborder="0"></iframe>
+        <form class="signup-form">
+            <div id="logo"></div>
+            <div id="signup-title">회원가입</div>
+            <div id="email-wrap">
+                <input id="signup-email" name="email" type="text" placeholder="Email">
+                <div class="valid-check" id="email-valid-check"></div>
+            </div>
+            <div id="password-wrap">
+                <input id="signup-password" name="password" type="password" placeholder="Password">
+                <div class="valid-check" id="password-regulation"></div>
+            </div>
+            <div id="password-check-wrap">
+                <input id="signup-password-check" type="password" placeholder="Password Check">
+                <div class="valid-check" id="password-match"></div>
+            </div>
+            <div id="nickname-wrap">
+                <input id="signup-nickname" name="nickname" type="text" placeholder="Nickname">
+                <div class="valid-check" id="nickname-valid-check"></div>
+            </div>
+            <div id="country-wrap">
+                <input id="signup-country" name="country" type="text" placeholder="Country">
+            </div>
+            <button id="signup-submit-btn" type="submit">회원가입</button>
+        </form>
     </div>
 </div>
-
 <div id="detail-container">
     <div id="country-name-wrap">
         <i id="close-sidebar-btn" class="fa-solid fa-arrow-left"></i>
@@ -978,8 +1021,9 @@
         <div id="detail-title">주요 뉴스</div>
         <i class="fa-solid fa-square-plus"></i>
     </div>
-    <div id="news-container"></div>
-    <!-- 뉴스 영역 -->
+    <div id="news-container">
+        <!-- 뉴스 영역 -->
+    </div>
     <div class="detail-title-wrap">
         <div id="detail-title">
             <i class="fa-solid fa-fire-flame-simple"></i> 해당 국가(<span class="country-name"></span>) 인기 동영상
@@ -991,20 +1035,47 @@
             <!-- 유튜브 영역 -->
         </div>
     </div>
-    <div class="detail-title-wrap">
-        <i id="post-write-icon" class="fa-solid fa-feather-pointed"></i>
+    <div id="post-write-title" class="detail-title-wrap">
+        <i id="post-write-icon" class="fa-solid fa-dove"></i>
         <div id="detail-title">방명록</div>
         <div class="detail-title-see-more">
-            <i id="modal-write-post-btn" class="fa-solid fa-pen-to-square"></i>
-            <i id="see-all-post-btn" class="fa-solid fa-square-plus"></i>
+            <i id="post-write-btn" class="fa-solid fa-pen-to-square"></i>
         </div>
     </div>
-    <div id="post-container"></div>
-    <!-- 방명록 영역 -->
+    <div id="post-write-container">
+        <div class="post-write-form">
+            <div class="post-profile-img-container">
+                <div class="post-profile-img"><i class='fa-solid fa-circle-user'></i></div>
+            </div>
+            <div class="post-contents-container">
+                <div id="post-write-nickname" class="post-author"></div>
+                <div id="post-write-textarea" class="post-title" contenteditable="true"></div>
+            </div>
+        </div>
+        <div class="post-write-btn-wrap">
+            <div id="post-write-submit-btn" class="post-write-btn-group">작성</div>
+            <div id="post-write-cancel-btn" class="post-write-btn-group">취소</div>
+        </div>
+    </div>
+    <div id="post-container">
+        <div class="post-content-container" id="post-content-container"></div>
+        <!-- 방명록 영역 -->
+        <div id="pagination"></div>
+    </div>
 
     <!-- 방명록 작성 모달 -->
-    <div id="model-write-post"></div>
+<!--    <div id="modal-write-post">
+        <form>
+            <input id="modal-write-title" type="text" placeholder="제목을 입력해주세요.">
+            <input id="modal-write-content" type="text" placeholder="내용을 입력해주세요.">
+            <input id="modal-write-country" type="text" placeholder="국가를 입력해주세요.">
+            <button id="modal-write-submit-btn" type="button">방명록 작성</button>
+        </form>
+    </div>-->
 </div>
+
 <script src="/js/index.js"></script>
+<script src="/js/sign-up.js"></script>
+
 </body>
 </html>
