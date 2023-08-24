@@ -22,9 +22,6 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
-    private String title;
-
     @Column(nullable = false, length = 200)
     private String content;
 
@@ -39,15 +36,13 @@ public class Post extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Post(String title, String content, Member author, String country) {
-        this.title = title;
+    public Post(String content, Member author, String country) {
         this.content = content;
         this.author = author;
         this.country = country;
     }
 
-    public void updateEntity(String title, String content) {
-        this.title = title;
+    public void updateEntity(String content) {
         this.content = content;
     }
 

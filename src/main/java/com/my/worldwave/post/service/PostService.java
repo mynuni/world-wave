@@ -48,7 +48,6 @@ public class PostService {
 
     public Long createPost(Member member, PostRequestDto postDto) {
         Post newPost = Post.builder()
-                .title(postDto.getTitle())
                 .content(postDto.getContent())
                 .author(member)
                 .country(postDto.getCountry())
@@ -61,7 +60,7 @@ public class PostService {
     public PostResponseDto updatePost(Long id, Member member, PostRequestDto postDto) {
         Post foundPost = findPostById(id);
         checkAuthority(member, foundPost);
-        foundPost.updateEntity(postDto.getTitle(), postDto.getContent());
+        foundPost.updateEntity(postDto.getContent());
         return convertToDto(foundPost);
     }
 
@@ -79,7 +78,7 @@ public class PostService {
 
     private void checkAuthority(Member member, Post post) {
         if (!post.getAuthor().getId().equals(member.getId())) {
-            throw new AccessDeniedException("ACCESS DENIED");
+            throw new AccessDeniedException("접근 권한이 없습니다.");
         }
     }
 

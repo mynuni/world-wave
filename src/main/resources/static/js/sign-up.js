@@ -20,7 +20,7 @@
         };
 
         const countryNames = Object.keys(countryMap);
-        $("#country").autocomplete({
+        $("#signup-country").autocomplete({
             source: function(request, response) {
                 const term = request.term.toLowerCase();
                 const matchedCountries = countryNames.filter(function(country) {
@@ -31,11 +31,11 @@
             select: function(event, ui) {
                 const selectedCountry = ui.item.value;
                 const countryCode = countryMap[selectedCountry];
-                $('#country').data("country-code", countryCode);
+                $('#signup-country').data("country-code", countryCode);
             }
         });
 
-        $("#email").on("keyup", function() {
+        $("#signup-email").on("keyup", function() {
             const email = $(this).val();
             if(!isEmailFormat(email)) {
                 $('#email-valid-check').text("이메일 형식이 올바르지 않습니다.").css("color", "red");
@@ -71,7 +71,7 @@
             });
         }
 
-        $("#nickname").on("keyup", function() {
+        $("#signup-nickname").on("keyup", function() {
             const nickname = $(this).val();
             checkNicknameDuplicate(nickname);
         });
@@ -96,10 +96,10 @@
             });
         }
 
-        $('#password, #password-check').on('keyup', validatePassword);
+        $('#signup-password, #signup-password-check').on('keyup', validatePassword);
         function validatePassword() {
-            const password = $('#password').val();
-            const passwordCheck = $('#password-check').val();
+            const password = $('#signup-password').val();
+            const passwordCheck = $('#signup-password-check').val();
             const num = password.search(/[0-9]/g);
             const eng = password.search(/[a-z]/ig);
 
@@ -137,13 +137,7 @@
         }
 
         $(".signup-form").submit(function(event) {
-            console.log("회원가입 폼 전송");
             event.preventDefault();
-            const email = $('#email').val();
-            const password = $('#password').val();
-            const passwordCheck = $('#password-check').val();
-            const nickname = $('#nickname').val();
-            const countryCode = $('#country').data("country-code");
 
             if (!validateForm()) {
                 return;
@@ -152,13 +146,14 @@
             $.ajax({
                 type: "POST",
                 url: "/auth/sign-up",
-                data: {
-                    email: email,
-                    password: password,
-                    passwordCheck: passwordCheck,
-                    nickname: nickname,
-                    country: countryCode
-                },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    email: $('#signup-email').val(),
+                    password: $('#signup-password').val(),
+                    passwordCheck: $('#signup-password-check').val(),
+                    nickname: $('#signup-nickname').val(),
+                    country: $('#signup-country').data("country-code")
+                }),
                 success: function(response) {
                     alert("회원가입이 완료되었습니다.");
                     window.parent.location.reload();

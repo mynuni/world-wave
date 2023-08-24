@@ -17,7 +17,6 @@ import static com.my.worldwave.post.dto.CommentResponseDto.convertToDtoList;
 @AllArgsConstructor
 public class PostResponseDto {
     private Long id;
-    private String title;
     private String content;
     private Long authorId;
     private String authorNickname;
@@ -30,7 +29,6 @@ public class PostResponseDto {
     public static PostResponseDto convertToDto(Post post) {
         return PostResponseDto.builder()
                 .id(post.getId())
-                .title(post.getTitle())
                 .content(post.getContent())
                 .authorId(post.getAuthor().getId())
                 .authorNickname(post.getAuthor().getNickname())

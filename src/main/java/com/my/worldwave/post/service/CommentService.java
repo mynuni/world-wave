@@ -59,7 +59,7 @@ public class CommentService {
 
     private void checkAuthority(Member member, Comment comment) {
         if (!comment.getAuthor().getId().equals(member.getId())) {
-            throw new AccessDeniedException("ACCESS DENIED");
+            throw new AccessDeniedException("접근 권한이 없습니다.");
         }
     }
 
