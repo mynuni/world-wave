@@ -31,16 +31,17 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PostResponseDto>> findAllPostsByCountry(String country, PageRequestDto pageRequestDto) {
-        Page<PostResponseDto> posts = postService.findAllPostsByCountry(country, pageRequestDto);
+    public ResponseEntity<Page<PostResponseDto>> findAllPostsByCountry(@AuthenticationPrincipal CustomUserDetails userDetails, String country, PageRequestDto pageRequestDto) {
+        log.info("SORT CONDITION:{}", pageRequestDto.getSort());
+        Page<PostResponseDto> posts = postService.findAllPostsByCountry(userDetails.getMember(), country, pageRequestDto);
         return ResponseEntity.ok(posts);
     }
 
     @PostMapping
-    public ResponseEntity<Void> createPost(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody PostRequestDto postDto) {
-        Long postId = postService.createPost(userDetails.getMember(), postDto);
-        String location = locationUrlBuilder.buildLocationUri(postId);
-        return ResponseEntity.created(URI.create(location)).build();
+    public ResponseEntity<PostResponseDto> createPost(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody PostRequestDto postDto) {
+        PostResponseDto postResponseDto = postService.createPost(userDetails.getMember(), postDto);
+        String location = locationUrlBuilder.buildLocationUri(postResponseDto.getId());
+        return ResponseEntity.created(URI.create(location)).body(postResponseDto);
     }
 
     @PutMapping("/{id}")
