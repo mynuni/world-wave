@@ -6,6 +6,7 @@ import com.my.worldwave.post.dto.PageRequestDto;
 import com.my.worldwave.post.dto.PostRequestDto;
 import com.my.worldwave.post.dto.PostResponseDto;
 import com.my.worldwave.post.entity.Post;
+import com.my.worldwave.post.repository.LikeRepository;
 import com.my.worldwave.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import static com.my.worldwave.post.dto.PostResponseDto.convertToDto;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
 
     @Transactional(readOnly = true)
     public List<PostResponseDto> findAllPosts(PageRequestDto pageRequestDto) {
@@ -34,10 +36,25 @@ public class PostService {
         return postPage.map(PostResponseDto::convertToDto).getContent();
     }
 
+//    @Transactional(readOnly = true)
+//    public Page<PostResponseDto> findAllPostsByCountry(Member member, String country, PageRequestDto pageRequestDto) {
+//        Page<Post> postPage = postRepository.findAllPostsByCountry(country, pageRequestDto.toPageable());
+//        return postPage.map(PostResponseDto::convertToDto);
+//    }
+
     @Transactional(readOnly = true)
-    public Page<PostResponseDto> findAllPostsByCountry(String country, PageRequestDto pageRequestDto) {
-        Page<Post> postPage = postRepository.findAllPostsByCountry(country, pageRequestDto.toPageable());
-        return postPage.map(PostResponseDto::convertToDto);
+    public Page<PostResponseDto> findAllPostsByCountry(Member member, String country, PageRequestDto pageRequestDto) {
+        String sortCondition = pageRequestDto.getSort();
+        Page<Post> postPage;
+
+        if ("likes".equals(sortCondition)) {
+            postPage = postRepository.findAllPostsByCountryOrderByLikes(country, pageRequestDto.toPageable());
+        } else if ("comments".equals(sortCondition)) {
+            postPage = postRepository.findAllPostsByCountryOrderByComments(country, pageRequestDto.toPageable());
+        } else {
+            postPage = postRepository.findAllPostsByCountry(country, pageRequestDto.toPageable());
+        }
+        return postPage.map(post -> withPermissionAndLikeStatus(post, member));
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +63,7 @@ public class PostService {
         return convertToDto(foundPost);
     }
 
-    public Long createPost(Member member, PostRequestDto postDto) {
+    public PostResponseDto createPost(Member member, PostRequestDto postDto) {
         Post newPost = Post.builder()
                 .content(postDto.getContent())
                 .author(member)
@@ -54,7 +71,8 @@ public class PostService {
                 .build();
 
         Post savedPost = postRepository.save(newPost);
-        return savedPost.getId();
+
+        return PostResponseDto.convertToDto(savedPost);
     }
 
     public PostResponseDto updatePost(Long id, Member member, PostRequestDto postDto) {
@@ -80,6 +98,27 @@ public class PostService {
         if (!post.getAuthor().getId().equals(member.getId())) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
         }
+    }
+
+    private PostResponseDto withPermission(Post post, Long memberId) {
+        PostResponseDto postResponseDto = PostResponseDto.convertToDto(post);
+        if (post.getAuthor().getId().equals(memberId)) {
+            postResponseDto.setHasPermission(true);
+        }
+        return postResponseDto;
+    }
+
+    private PostResponseDto withPermissionAndLikeStatus(Post post, Member member) {
+        PostResponseDto postResponseDto = PostResponseDto.convertToDto(post);
+
+        if (post.getAuthor().getId().equals(member.getId())) {
+            postResponseDto.setHasPermission(true);
+        }
+
+        boolean isLiked = likeRepository.existsByMemberAndPost(member, post);
+        postResponseDto.setLikeStatus(isLiked);
+
+        return postResponseDto;
     }
 
 }

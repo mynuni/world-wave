@@ -23,9 +23,9 @@ public class LikeController {
     }
 
     @PostMapping("/{postId}/like-toggle")
-    public ResponseEntity<PostResponseDto> toggleLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        PostResponseDto postResponseDto = likeService.toggleLike(postId, userDetails.getMember());
-        return ResponseEntity.ok(postResponseDto);
+    public ResponseEntity<Void> toggleLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        likeService.toggleLike(postId, userDetails.getMember());
+        return ResponseEntity.ok().build();
     }
 
 }
