@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 
 @Getter
 @NoArgsConstructor
@@ -16,6 +17,7 @@ public class Member {
     private Long id;
 
     @Column(nullable = false, length = 50)
+    @Email
     private String email;
 
     @Column(nullable = false, length = 100)
@@ -30,7 +32,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // POST, COMMENT 관련 필드
+    @OneToOne
+    @JoinColumn(name = "profile_img_id")
+    private ProfileImg profileImg;
 
     @Builder
     public Member(String email, String password, String nickname, String country, Role role) {
@@ -39,6 +43,10 @@ public class Member {
         this.nickname = nickname;
         this.country = country;
         this.role = role;
+    }
+
+    public void updateProfileImg(ProfileImg profileImg) {
+        this.profileImg = profileImg;
     }
 
 }
