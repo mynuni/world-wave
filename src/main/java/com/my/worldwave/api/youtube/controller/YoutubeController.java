@@ -27,12 +27,7 @@ public class YoutubeController {
     @Cacheable(cacheNames = "youtubeCache")
     public Mono<List<Video>> getPopularVideos(String regionCode) {
         Cache newsCache = cacheManager.getCache("newsCache");
-
-        log.info("youtubeCache is null? {}", newsCache == null);
-        if (newsCache != null) {
-            Cache.ValueWrapper valueWrapper = newsCache.get(regionCode);
-            log.info("valueWrapper is null? {}", valueWrapper == null);
-        }
+        log.info("YOUTUBE CACHED:{}", newsCache == null);
         return youtubeClient.getPopularVideos(regionCode);
     }
 

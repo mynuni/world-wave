@@ -29,13 +29,7 @@ public class NewsController {
     @Cacheable(cacheNames = "newsCache")
     public Mono<News[]> getNews(NewsRequestDto newsRequestDto) {
         Cache newsCache = cacheManager.getCache("newsCache");
-
-        log.info("newsCache is null? {}", newsCache == null);
-        if (newsCache != null) {
-            Cache.ValueWrapper valueWrapper = newsCache.get(newsRequestDto);
-            log.info("valueWrapper is null? {}", valueWrapper == null);
-        }
-
+        log.info("NEWS CACHED:{}", newsCache == null);
         return newsApiClient.getNews(newsRequestDto);
     }
 
