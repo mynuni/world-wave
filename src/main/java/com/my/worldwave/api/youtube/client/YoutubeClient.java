@@ -1,14 +1,11 @@
 package com.my.worldwave.api.youtube.client;
 
 import com.my.worldwave.api.youtube.dto.VideoResponseDto;
-import com.my.worldwave.api.youtube.model.Video;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @Slf4j
 @Component
@@ -26,7 +23,7 @@ public class YoutubeClient {
                 .build();
     }
 
-    public Mono<List<Video>> getPopularVideos(String regionCode) {
+    public Mono<VideoResponseDto> getPopularVideos(String regionCode, String pageToken) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_PATH)
@@ -35,10 +32,10 @@ public class YoutubeClient {
                         .queryParam("regionCode", regionCode)
                         .queryParam("maxResults", NUMBER_OF_VIDEOS_RETURN)
                         .queryParam("key", API_KEY)
+                        .queryParam("pageToken", pageToken)
                         .build())
                 .retrieve()
-                .bodyToMono(VideoResponseDto.class)
-                .map(response -> response.getItems());
+                .bodyToMono(VideoResponseDto.class);
     }
 
 }

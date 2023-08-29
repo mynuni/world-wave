@@ -2,6 +2,7 @@ package com.my.worldwave.api.news.controller;
 
 import com.my.worldwave.api.news.client.NewsApiClient;
 import com.my.worldwave.api.news.dto.NewsRequestDto;
+import com.my.worldwave.api.news.dto.NewsResponseDto;
 import com.my.worldwave.api.news.model.News;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +24,10 @@ import java.util.Arrays;
 public class NewsController {
 
     private final NewsApiClient newsApiClient;
-    private final CacheManager cacheManager;
 
     @GetMapping("/news")
     @Cacheable(cacheNames = "newsCache")
-    public Mono<News[]> getNews(NewsRequestDto newsRequestDto) {
-        Cache newsCache = cacheManager.getCache("newsCache");
-        log.info("NEWS CACHED:{}", newsCache == null);
+    public Mono<NewsResponseDto> getNews(NewsRequestDto newsRequestDto) {
         return newsApiClient.getNews(newsRequestDto);
     }
 

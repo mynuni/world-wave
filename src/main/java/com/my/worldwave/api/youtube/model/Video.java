@@ -33,4 +33,5 @@ public class Video {
         private int width;
         private int height;
     }
+
 }

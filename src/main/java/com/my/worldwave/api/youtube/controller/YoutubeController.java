@@ -1,6 +1,7 @@
 package com.my.worldwave.api.youtube.controller;
 
 import com.my.worldwave.api.youtube.client.YoutubeClient;
+import com.my.worldwave.api.youtube.dto.VideoResponseDto;
 import com.my.worldwave.api.youtube.model.Video;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +22,11 @@ import java.util.List;
 public class YoutubeController {
 
     private final YoutubeClient youtubeClient;
-    private final CacheManager cacheManager;
 
     @GetMapping("/popular-videos")
     @Cacheable(cacheNames = "youtubeCache")
-    public Mono<List<Video>> getPopularVideos(String regionCode) {
-        Cache newsCache = cacheManager.getCache("newsCache");
-        log.info("YOUTUBE CACHED:{}", newsCache == null);
-        return youtubeClient.getPopularVideos(regionCode);
+    public Mono<VideoResponseDto> getPopularVideos(String regionCode, String pageToken) {
+        return youtubeClient.getPopularVideos(regionCode, pageToken);
     }
 
 }

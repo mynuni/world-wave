@@ -25,17 +25,17 @@ public class NewsApiClient {
                 .build();
     }
 
-    public Mono<News[]> getNews(NewsRequestDto newsRequestDto) {
+    public Mono<NewsResponseDto> getNews(NewsRequestDto newsRequestDto) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_PATH)
                         .queryParam("country", newsRequestDto.getCountry())
                         .queryParam("pageSize", NUMBER_OF_NEWS_RETURN)
+                        .queryParam("page", newsRequestDto.getPage())
                         .queryParam("apiKey", API_KEY)
                         .build())
                 .retrieve()
-                .bodyToMono(NewsResponseDto.class)
-                .map(response -> response.getArticles());
+                .bodyToMono(NewsResponseDto.class);
     }
 
 }

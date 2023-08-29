@@ -10,13 +10,14 @@ import java.util.Objects;
 public class NewsRequestDto {
     private String country;
     private int pageSize;
+    private int page;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NewsRequestDto that = (NewsRequestDto) o;
-        return pageSize == that.pageSize && Objects.equals(country, that.country);
+        return pageSize == that.pageSize && page == that.page && Objects.equals(country, that.country);
     }
 
     @Override
