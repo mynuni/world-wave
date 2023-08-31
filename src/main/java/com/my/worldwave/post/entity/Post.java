@@ -28,9 +28,6 @@ public class Post extends BaseEntity {
     @Column(nullable = false, length = 200)
     private String content;
 
-    @Column(nullable = false, length = 2)
-    private String country;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Member author;
@@ -47,15 +44,21 @@ public class Post extends BaseEntity {
     @Formula("(SELECT COUNT(*) FROM Likes l WHERE l.post_id = id)")
     private int likesCount;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostFile> files = new ArrayList<>();
+
     @Builder
-    public Post(String content, Member author, String country) {
+    public Post(String content, Member author, List<PostFile> files) {
         this.content = content;
         this.author = author;
-        this.country = country;
+        this.files = files;
     }
 
     public void updateEntity(String content) {
         this.content = content;
     }
 
+    public void updateFiles(List<PostFile> postFiles) {
+        this.files = postFiles;
+    }
 }
