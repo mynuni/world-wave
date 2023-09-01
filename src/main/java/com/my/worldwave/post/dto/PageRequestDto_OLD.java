@@ -15,15 +15,13 @@ public class PageRequestDto {
     private int size = 5;
     private Sort.Direction direction = Sort.Direction.DESC;
     private String sort;
-
-//    public Pageable toPageable() {
-//        return PageRequest.of(page, size, direction, sort);
-//    }
+    private String searchKeyword;
+    private String country;
 
     public Pageable toPageable() {
         if ("likes".equals(sort)) {
             return PageRequest.of(page, size, direction, "likesCount");
-        } else if("comments".equals(sort)){
+        } else if ("comments".equals(sort)) {
             return PageRequest.of(page, size, direction, "commentsCount");
         } else {
             return PageRequest.of(page, size, direction, "createdAt");
