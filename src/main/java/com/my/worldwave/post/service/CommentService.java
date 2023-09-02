@@ -5,17 +5,21 @@ import com.my.worldwave.exception.post.PostNotFoundException;
 import com.my.worldwave.member.entity.Member;
 import com.my.worldwave.post.dto.CommentRequestDto;
 import com.my.worldwave.post.dto.CommentResponseDto;
+import com.my.worldwave.post.dto.FeedRequest;
 import com.my.worldwave.post.entity.Comment;
 import com.my.worldwave.post.entity.Post;
 import com.my.worldwave.post.repository.CommentRepository;
 import com.my.worldwave.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.my.worldwave.post.dto.CommentResponseDto.convertToDto;
 
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -23,6 +27,17 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+
+    @Transactional(readOnly = true)
+    public Page<CommentResponseDto> findAll(Long postId, Member member, FeedRequest feedRequest) {
+        Page<Comment> commentPage = commentRepository.findAllByPostId(postId, feedRequest.toPageable());
+
+        return commentPage.map(comment -> {
+            CommentResponseDto commentResponseDto = CommentResponseDto.convertToDto(comment);
+            commentResponseDto.setHasPermission(comment.getAuthor().getId().equals(member.getId()));
+            return commentResponseDto;
+        });
+    }
 
     @Transactional(readOnly = true)
     public Comment findById(Long id) {
