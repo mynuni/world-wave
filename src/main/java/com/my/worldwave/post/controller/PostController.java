@@ -1,8 +1,9 @@
 package com.my.worldwave.post.controller;
 
-import com.my.worldwave.post.dto.PageRequestDto;
+import com.my.worldwave.post.dto.FeedRequest;
 import com.my.worldwave.post.dto.PostRequestDto;
 import com.my.worldwave.post.dto.PostResponseDto;
+import com.my.worldwave.post.dto.PostUpdateRequest;
 import com.my.worldwave.post.service.PostService;
 import com.my.worldwave.security.CustomUserDetails;
 import com.my.worldwave.util.LocationUrlBuilder;
@@ -31,22 +32,21 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PostResponseDto>> findAllPostsByCountry(@AuthenticationPrincipal CustomUserDetails userDetails, String country, PageRequestDto pageRequestDto) {
-        log.info("SORT CONDITION:{}", pageRequestDto.getSort());
-        Page<PostResponseDto> posts = postService.findAllPostsByCountry(userDetails.getMember(), country, pageRequestDto);
+    public ResponseEntity<Page<PostResponseDto>> getFeeds(@AuthenticationPrincipal CustomUserDetails userDetails, FeedRequest feedRequest) {
+        Page<PostResponseDto> posts = postService.getFeeds(userDetails.getMember(), feedRequest);
         return ResponseEntity.ok(posts);
     }
 
     @PostMapping
-    public ResponseEntity<PostResponseDto> createPost(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody PostRequestDto postDto) {
-        PostResponseDto postResponseDto = postService.createPost(userDetails.getMember(), postDto);
-        String location = locationUrlBuilder.buildLocationUri(postResponseDto.getId());
-        return ResponseEntity.created(URI.create(location)).body(postResponseDto);
+    public ResponseEntity<Void> createPost(@AuthenticationPrincipal CustomUserDetails userDetails, PostRequestDto postRequestDto) {
+        Long postId = postService.createPost(userDetails.getMember(), postRequestDto);
+        String location = locationUrlBuilder.buildLocationUri(postId);
+        return ResponseEntity.created(URI.create(location)).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody PostRequestDto postRequestDto) {
-        PostResponseDto postResponseDto = postService.updatePost(id, userDetails.getMember(), postRequestDto);
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails, PostUpdateRequest request) {
+        PostResponseDto postResponseDto = postService.updatePost(id, userDetails.getMember(), request);
         return ResponseEntity.ok(postResponseDto);
     }
 
