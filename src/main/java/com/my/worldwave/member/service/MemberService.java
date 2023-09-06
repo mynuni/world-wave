@@ -10,20 +10,21 @@ import com.my.worldwave.member.entity.Role;
 import com.my.worldwave.member.repository.MemberRepository;
 import com.my.worldwave.member.repository.ProfileImgRepository;
 import com.my.worldwave.util.FileUploadService;
+import com.my.worldwave.util.dto.FileUploadResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.my.worldwave.member.dto.MemberInfoDto.toDto;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -49,24 +50,43 @@ public class MemberService {
         memberRepository.save(newMember);
     }
 
+    public List<MemberInfoDto> getMemberList(Member member, MemberSearchDto searchDto) {
+        return memberRepository.searchMembers(
+                        searchDto.getCountry(),
+                        searchDto.getGender(),
+                        searchDto.getMinAge(),
+                        searchDto.getMaxAge(),
+                        searchDto.toPageable())
+                .stream()
+                .map(MemberInfoDto::toDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     public MemberInfoDto getMemberInfo(Long id) {
-        Member foundMember = findById(id);
-        return MemberInfoDto.toDto(foundMember);
+        Member foundMember = memberRepository.findMemberWithProfileImg(id).orElseThrow(() -> new EntityNotFoundException());
+        return toDto(foundMember);
     }
 
     @Transactional
-    public ProfileImgDto uploadProfileImg(Long id, MultipartFile file) {
-        String filePath = fileUploadService.uploadFile(file);
+    public ProfileImgDto uploadProfileImg(Member member, MultipartFile file) throws IOException {
+        FileUploadResponse result = fileUploadService.uploadFile(file);
+
+        if (member.getProfileImg() != null) {
+            fileUploadService.deleteFile(member.getProfileImg().getStoredFileName());
+        }
+
         ProfileImg profileImg = ProfileImg.builder()
-                .originalFileName(file.getOriginalFilename())
-                .filePath(filePath)
-                .fileSize(file.getSize())
+                .originalFileName(result.getOriginalFileName())
+                .storedFileName(result.getStoredFileName())
+                .storedFilePath(result.getStoredFilePath())
+                .extension(result.getExtension())
+                .fileSize(result.getFileSize())
                 .build();
 
         ProfileImg savedProfileImg = profileImgRepository.save(profileImg);
-        Member member = findById(id);
         member.updateProfileImg(savedProfileImg);
+        memberRepository.save(member);
         return ProfileImgDto.toDto(savedProfileImg);
     }
 
@@ -85,14 +105,17 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteMember(Long id, Member member) {
-        // 회원 탈퇴
+    public void deleteMember(Long id, WithdrawalRequest withdrawalRequest) {
+        Member foundMember = findById(id);
+        if (!passwordEncoder.matches(withdrawalRequest.getPassword(), foundMember.getPassword())) {
+            throw new PasswordMismatchException();
+        }
+        memberRepository.delete(foundMember);
     }
 
     @Transactional(readOnly = true)
     public List<FollowResponse> getSuggestedMembers(Long id, SuggestedMembersRequest request) {
         Page<Member> suggestedMembers = memberRepository.findSuggestedMembers(id, request.getCountry(), request.toPageable());
-        log.info("Service SIZE:{}", suggestedMembers.getContent().size());
         return suggestedMembers.getContent().stream()
                 .map(FollowResponse::toDto)
                 .collect(Collectors.toList());
