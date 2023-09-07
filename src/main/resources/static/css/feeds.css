@@ -22,7 +22,7 @@
 .feeds-content-container::-webkit-scrollbar {
       width: 0em;
       height: 0em;
-  }
+}
 
 .feeds-title-container {
       display: flex;
@@ -263,4 +263,240 @@
   font-size: 14px;
   color: grey;
   padding: 2px;
+}
+
+.comments-container {
+    padding-bottom: 12px;
+}
+
+.comment-write-form-container {
+    padding: 12px;
+    border-top: 1px solid silver;
+    border-bottom: 1px solid silver;
+}
+
+.comment-profile-img, .comments-item-profile-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.comments-item {
+    display: flex;
+}
+
+.comments-item-title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.comment-item-author {
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+.comment-item-write-date {
+    font-size: 14px;
+    color: grey;
+    cursor: pointer;
+}
+
+.comment-edit-form-btn, .comment-delete-btn {
+    cursor: pointer;
+    color: grey;
+    padding: 3px 8px;
+}
+
+.comment-edit-form-btn {
+    border-bottom: 1px solid grey;
+}
+
+.comment-edit-form-btn:hover, .comment-delete-btn:hover {
+    background-color: grey;
+    color: white;
+}
+
+.comments-item-profile-img-wrap {
+    margin-right: 8px;
+}
+
+.comment-item-btn-group {
+    display: none;
+    background-color: white;
+    width: 50px;
+    position: absolute;
+    top: -7px;
+    right: 35px;
+    border: 1px solid grey;
+    text-align: center;
+}
+
+.comments-item {
+    padding: 10px 12px
+}
+
+.comments-item:hover {
+    background-color: rgb(240, 240, 240);
+}
+
+.comments-item:hover .comment-setting-group{
+    display: flex;
+}
+
+.comment-setting-group {
+    position: relative;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.comment-setting-icon {
+    padding: 8px;
+    border-radius: 50%;
+    color: grey;
+    cursor: pointer;
+}
+
+.comment-setting-icon:hover {
+    color: white;
+    background-color: rgb(175, 175, 175);
+}
+
+.comment-pagination-container {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comment-pagination-container div {
+    padding: 3px 4px;
+    cursor: pointer;
+}
+
+.post-setting-btn-group {
+    position: relative;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.post-setting-btn {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.post-setting-btn:hover {
+    color: white;
+    background-color: rgb(200, 200, 200);
+}
+
+.post-options {
+    position: absolute;
+}
+
+.post-edit-btn {
+    border-bottom: 1px solid grey;
+}
+
+.post-edit-btn, .post-delete-btn {
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.post-edit-btn:hover {
+    background-color: grey;
+    color: white;
+}
+
+.post-delete-btn:hover {
+    background-color: grey;
+    color: white;
+}
+
+.post-options {
+    right: 0px;
+    border: 1px solid grey;
+    background-color: white;
+    width: 55px;
+}
+
+.feeds-content-edit-container {
+    display: none;
+}
+
+.edit-image-preview-container {
+    width: 40px;
+    height: 40px;
+    margin: 10px;
+    text-align: center;
+}
+
+.edit-image-preview-container img {
+    width: 40px;
+    height: 40px;
+}
+
+.edit-form-img-slides {
+    display: flex;
+    justify-content: center;
+}
+
+#post-edit-btn-container {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
+#post-edit-submit-btn, #post-edit-cancel-btn {
+    border-radius: 8px;
+    margin: 8px;
+    text-align: center;
+    padding: 12px;
+    color: white;
+    cursor: pointer;
+}
+
+#post-edit-submit-btn {
+    background-color: rgb(42, 169, 224);
+}
+
+#post-edit-cancel-btn {
+    background-color: grey;
+}
+
+#image-big-container {
+    height: 320px;
+    display: flex;
+    justify-content: center;
+    background-color: rgb(240, 240, 240);
+}
+
+.add-button {
+    padding: 8px;
+    position: absolute;
+    right: 0px;
+    border: 1px solid rgb(200, 200, 200);
+    color: black;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.feeds-content-edit-container .feeds-write-textarea {
+    margin: 12px;
+    height: 140px;
+}
+
+.edit-form-img-slides {
+    border: 1px solid rgb(200, 200, 200);
+    padding: 8px 0 20px 0;
+}
+
+.edit-delete-preview-btn {
+    color: red;
+    cursor: pointer;
 }
