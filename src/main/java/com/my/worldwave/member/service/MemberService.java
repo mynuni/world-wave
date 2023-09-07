@@ -9,6 +9,7 @@ import com.my.worldwave.member.entity.ProfileImg;
 import com.my.worldwave.member.entity.Role;
 import com.my.worldwave.member.repository.MemberRepository;
 import com.my.worldwave.member.repository.ProfileImgRepository;
+import com.my.worldwave.post.repository.PostRepository;
 import com.my.worldwave.util.FileUploadService;
 import com.my.worldwave.util.dto.FileUploadResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ProfileImgRepository profileImgRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PostRepository postRepository;
     private final FileUploadService fileUploadService;
 
     @Transactional
@@ -105,11 +107,15 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteMember(Long id, WithdrawalRequest withdrawalRequest) {
-        Member foundMember = findById(id);
-        if (!passwordEncoder.matches(withdrawalRequest.getPassword(), foundMember.getPassword())) {
-            throw new PasswordMismatchException();
+        if (!withdrawalRequest.isAgreedToPolicy()) {
+            throw new IllegalArgumentException("탈퇴 약관에 동의해야 합니다.");
         }
+
+        Member foundMember = findById(id);
+        validatePassword(withdrawalRequest.getPassword(), foundMember.getPassword());
+        postRepository.deleteAllByAuthor(foundMember);
         memberRepository.delete(foundMember);
     }
 
@@ -119,6 +125,12 @@ public class MemberService {
         return suggestedMembers.getContent().stream()
                 .map(FollowResponse::toDto)
                 .collect(Collectors.toList());
+    }
+
+    private void validatePassword(String rawPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+            throw new PasswordMismatchException();
+        }
     }
 
     @Transactional(readOnly = true)
