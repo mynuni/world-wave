@@ -10,13 +10,13 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 public class YoutubeClient {
-    private final String BASE_URL = "https://www.googleapis.com";
-    private final String BASE_PATH = "/youtube/v3/videos";
+    private static final String BASE_URL = "https://www.googleapis.com";
+    private static final String BASE_PATH = "/youtube/v3/videos";
+    private static final int NUMBER_OF_VIDEOS_RETURN = 3;
     private final WebClient webClient;
     private final String API_KEY;
-    private static final int NUMBER_OF_VIDEOS_RETURN = 3;
 
-    public YoutubeClient(@Value("${youtube.api.key}") String apiKey) {
+    public YoutubeClient(@Value("${api.youtube.key}") String apiKey) {
         this.API_KEY = apiKey;
         this.webClient = WebClient.builder()
                 .baseUrl(BASE_URL)
@@ -27,7 +27,7 @@ public class YoutubeClient {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_PATH)
-                        .queryParam("part", "snippet")
+                        .queryParam("part", "snippet,statistics")
                         .queryParam("chart", "mostPopular")
                         .queryParam("regionCode", regionCode)
                         .queryParam("maxResults", NUMBER_OF_VIDEOS_RETURN)
