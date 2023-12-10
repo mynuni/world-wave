@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FileUploadResponse {
+public class FileUploadResult {
     private String originalFileName;
     private String storedFileName;
     private String storedFilePath;
@@ -14,7 +14,7 @@ public class FileUploadResponse {
     private long fileSize;
 
     @Builder
-    public FileUploadResponse(String originalFileName, String storedFileName, String storedFilePath, String extension, long fileSize) {
+    public FileUploadResult(String originalFileName, String storedFileName, String storedFilePath, String extension, long fileSize) {
         this.originalFileName = originalFileName;
         this.storedFileName = storedFileName;
         this.storedFilePath = storedFilePath;

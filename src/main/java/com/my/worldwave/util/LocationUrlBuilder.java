@@ -1,17 +1,17 @@
 package com.my.worldwave.util;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-@Component
+import java.net.URI;
+
 public class LocationUrlBuilder {
 
-    public String buildLocationUri(Long id) {
+    public static URI buildLocationUri(Long id) {
         return ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(id)
-                .toUriString();
+                .toUri();
     }
 
 }

@@ -1,6 +1,6 @@
 package com.my.worldwave.util;
 
-import com.my.worldwave.util.dto.FileUploadResponse;
+import com.my.worldwave.util.dto.FileUploadResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,11 +21,11 @@ public class FileUploadService {
     private final String uploadDirectory;
     private final List<String> ALLOWED_IMAGE_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png");
 
-    public FileUploadService(@Value("${upload.path}") String uploadDirectory) {
+    public FileUploadService(@Value("${spring.servlet.multipart.location}") String uploadDirectory) {
         this.uploadDirectory = uploadDirectory;
     }
 
-    public FileUploadResponse uploadFile(MultipartFile file) throws IOException {
+    public FileUploadResult uploadFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("파일을 선택해주세요.");
         }
@@ -42,7 +42,7 @@ public class FileUploadService {
             Path path = Paths.get(storedFilePath).toAbsolutePath();
             file.transferTo(path.toFile());
 
-            return FileUploadResponse.builder()
+            return FileUploadResult.builder()
                     .originalFileName(originalFileName)
                     .storedFileName(storedFileName)
                     .storedFilePath(storedFilePath)
@@ -50,11 +50,12 @@ public class FileUploadService {
                     .fileSize(file.getSize())
                     .build();
         } catch (IOException e) {
-            throw new IOException("파일 업로드에 실패했습니다.", e);
+            throw new RuntimeException("파일 업로드에 실패했습니다.", e);
         }
 
     }
 
+    // (배포 시에는 연관 관계만 끊고 몰아서 삭제)
     public void deleteFile(String storedFileName) throws IOException {
         String storedFilePath = Paths.get(uploadDirectory, storedFileName).toString();
         Path path = Paths.get(storedFilePath).toAbsolutePath();
@@ -62,8 +63,6 @@ public class FileUploadService {
         if (file.exists() && file.isFile()) {
             if (!file.delete()) {
                 throw new IOException("파일 삭제에 실패했습니다.");
-            } else {
-                log.info("삭제된 파일:{}", storedFilePath);
             }
         }
     }
