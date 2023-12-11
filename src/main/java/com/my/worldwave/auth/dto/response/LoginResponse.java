@@ -1,4 +1,4 @@
-package com.my.worldwave.auth.dto;
+package com.my.worldwave.auth.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenPair {
+public class LoginResponse {
     private String accessToken;
-    private String refreshToken;
 
 }
