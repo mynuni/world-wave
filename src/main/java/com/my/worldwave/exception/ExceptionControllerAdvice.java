@@ -1,6 +1,6 @@
 package com.my.worldwave.exception;
 
-import com.my.worldwave.exception.member.AuthenticationFailureException;
+import com.my.worldwave.exception.auth.AuthenticationFailureException;
 import com.my.worldwave.exception.member.RefreshTokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Slf4j
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
 
@@ -23,16 +21,27 @@ public class ExceptionControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(e.getClass().getSimpleName(), e.getMessage()));
     }
 
+    // 바인딩 에러 한 개만 반환
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ExceptionResponse>> handleValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ExceptionResponse> handleValidationException(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        List<ExceptionResponse> responses = fieldErrors.stream()
-                .map(fieldError -> new ExceptionResponse(e.getClass().getSimpleName(), fieldError.getDefaultMessage()))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responses);
+        FieldError firstFieldError = fieldErrors.get(0);
+        ExceptionResponse response = new ExceptionResponse(e.getClass().getSimpleName(), firstFieldError.getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    //     바인딩 에러를 리스트로 반환할 경우
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<List<ExceptionResponse>> handleValidationException(MethodArgumentNotValidException e) {
+//        BindingResult bindingResult = e.getBindingResult();
+//        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+//        List<ExceptionResponse> responses = fieldErrors.stream()
+//                .map(fieldError -> new ExceptionResponse(e.getClass().getSimpleName(), fieldError.getDefaultMessage()))
+//                .collect(Collectors.toList());
+//
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responses);
+//    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException e) {
@@ -47,6 +56,11 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(RefreshTokenExpiredException.class)
     public ResponseEntity<ExceptionResponse> handleRefreshTokenExpiredException(RefreshTokenExpiredException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ExceptionResponse(e.getClass().getSimpleName(), e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleInternalServerException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ExceptionResponse(e.getClass().getSimpleName(), e.getMessage()));
     }
 
 }

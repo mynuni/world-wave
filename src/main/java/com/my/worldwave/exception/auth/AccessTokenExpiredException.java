@@ -1,4 +1,4 @@
-package com.my.worldwave.exception.member;
+package com.my.worldwave.exception.auth;
 
 import org.springframework.security.core.AuthenticationException;
 
