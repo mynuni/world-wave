@@ -5,17 +5,20 @@ import com.my.worldwave.util.domain.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
-@Table(name = "COMMENTS")
+@DynamicUpdate
+@Table(name = "comments")
 @Entity
 public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
     private Long id;
 
     @Column(nullable = false, length = 100)
@@ -36,7 +39,7 @@ public class Comment extends BaseEntity {
         this.author = author;
     }
 
-    public void updateEntity(String content) {
+    public void updateContent(String content) {
         this.content = content;
     }
 

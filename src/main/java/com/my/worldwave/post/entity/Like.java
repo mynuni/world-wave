@@ -1,6 +1,7 @@
 package com.my.worldwave.post.entity;
 
 import com.my.worldwave.member.entity.Member;
+import com.my.worldwave.util.domain.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +12,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "likes")
 @Entity
-public class Like {
+public class Like extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "like_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
