@@ -20,8 +20,7 @@ public class NewsController {
     private final NewsApiClient newsApiClient;
 
     @GetMapping("/explore/popular/news")
-    @Cacheable(cacheNames = "newsCache")
-    public Mono<NewsResponseDto> getNews(NewsRequestDto newsRequestDto) {
+    public NewsResponseDto getNews(NewsRequestDto newsRequestDto) {
         return newsApiClient.getNews(newsRequestDto);
     }
 
