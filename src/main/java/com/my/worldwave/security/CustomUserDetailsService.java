@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member foundMember = memberRepository.findByEmail(username)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new UsernameNotFoundException("인증 정보가 올바르지 않습니다."));
 
         return new CustomUserDetails(foundMember);
     }

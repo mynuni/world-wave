@@ -1,9 +1,9 @@
 package com.my.worldwave.security;
 
-import com.my.worldwave.exception.member.AccessTokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,8 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.my.worldwave.security.JwtTokenService.AUTHORIZATION_HEADER;
-import static com.my.worldwave.security.JwtTokenService.BEARER_PREFIX;
+import static com.my.worldwave.auth.util.AuthenticationConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,28 +28,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractTokenFromRequest(request);
-        try{
+        try {
             if (token != null && jwtTokenService.isValidToken(token)) {
                 Authentication authentication = jwtAuthenticationProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (AccessTokenExpiredException e) {
+        } catch (AuthenticationException e) {
             jwtAuthenticationEntryPoint.commence(request, response, e);
             return;
         }
-
         filterChain.doFilter(request, response);
     }
 
     private String extractTokenFromRequest(HttpServletRequest request) {
         String headerValue = request.getHeader(AUTHORIZATION_HEADER);
-
         if (headerValue != null && headerValue.startsWith(BEARER_PREFIX)) {
-            return headerValue.substring(BEARER_PREFIX.length());
+            return headerValue.substring(BEARER_PREFIX_LENGTH);
         }
-
         return null;
-
     }
 
 }

@@ -1,6 +1,6 @@
 package com.my.worldwave.security;
 
-import com.my.worldwave.exception.member.AccessTokenExpiredException;
+import com.my.worldwave.exception.auth.AccessTokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -18,12 +18,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         if (authException instanceof AccessTokenExpiredException) {
-            log.info("엑세스 토큰 만료");
+            // Access Token이 만료된 경우 401을 반환한다.
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
-            log.info("다른 예외");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized");
+            // 인증 필터를 지난 후 AccessDenied에 넘겨지지 않은 예외가 발생한 경우 403을 반환한다.
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 
