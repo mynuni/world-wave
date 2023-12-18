@@ -1,5 +1,7 @@
 package com.my.worldwave.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.my.worldwave.chat.listener.ChatMessageListener;
 import com.my.worldwave.notification.service.NotificationService;
 import org.springframework.cache.CacheManager;
@@ -28,7 +30,8 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
         return redisTemplate;
     }
 
