@@ -1,31 +1,25 @@
 package com.my.worldwave.chat.entity;
 
-import com.my.worldwave.member.entity.Member;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import java.util.List;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Document(collection = "chatRoom")
 public class ChatRoom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_room_id")
-    private Long id;
+    private String chatRoomId;
     private String chatRoomName;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member creator;
-
-    @Builder
-    public ChatRoom(String chatRoomName, Member creator) {
-        this.chatRoomName = chatRoomName;
-        this.creator = creator;
-    }
+    private Long creatorId;
+    private List<String> participantIds;
 
 }
