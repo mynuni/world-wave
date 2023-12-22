@@ -1,6 +1,6 @@
 package com.my.worldwave.chat.dto.response;
 
-import com.my.worldwave.chat.entity.ChatRoom2;
+import com.my.worldwave.chat.entity.ChatRoom;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class ChatRoomResponse {
         this.participantCount = participantCount;
     }
 
-    public static ChatRoomResponse from(ChatRoom2 chatRoom) {
+    public static ChatRoomResponse from(ChatRoom chatRoom) {
         return ChatRoomResponse.builder()
                 .chatRoomId(chatRoom.getChatRoomId())
                 .chatRoomName(chatRoom.getChatRoomName())

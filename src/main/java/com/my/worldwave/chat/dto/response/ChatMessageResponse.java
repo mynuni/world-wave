@@ -1,6 +1,6 @@
 package com.my.worldwave.chat.dto.response;
 
-import com.my.worldwave.chat.entity.ChatMessage2;
+import com.my.worldwave.chat.entity.ChatMessage;
 import com.my.worldwave.chat.entity.ChatMessageType;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class ChatMessageResponse {
         this.createdAt = createdAt;
     }
 
-    public static ChatMessageResponse from(ChatMessage2 chatMessage) {
+    public static ChatMessageResponse from(ChatMessage chatMessage) {
         return ChatMessageResponse.builder()
                 .chatMessageId(chatMessage.getChatMessageId())
                 .chatRoomId(chatMessage.getChatRoomId())

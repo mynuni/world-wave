@@ -5,6 +5,8 @@ import com.my.worldwave.chat.dto.response.ChatMessageResponse;
 import com.my.worldwave.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -23,15 +25,15 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    @MessageMapping("/chat/room/{roomId}")
+    @MessageMapping("/chat/rooms/{roomId}")
     public void message(@DestinationVariable String roomId, ChatMessageRequest chatMessageRequest) {
         redisTemplate.convertAndSend("pub:chat", chatMessageRequest);
         chatMessageService.saveMessage(chatMessageRequest);
     }
 
     @GetMapping("/api/chat/rooms/{chatRoomId}/messages")
-    public ResponseEntity<List<ChatMessageResponse>> getPreviousMessages(@PathVariable Long chatRoomId) {
-        List<ChatMessageResponse> messages = chatMessageService.getPreviousMessages(chatRoomId);
+    public ResponseEntity<Page<ChatMessageResponse>> getPreviousMessages(@PathVariable String chatRoomId, Pageable pageable) {
+        Page<ChatMessageResponse> messages = chatMessageService.getPreviousMessages(chatRoomId, pageable);
         return ResponseEntity.ok(messages);
     }
 

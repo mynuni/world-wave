@@ -7,28 +7,28 @@ import com.my.worldwave.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
-@RequestMapping("/api/chat/rooms")
 @RequiredArgsConstructor
 @RestController
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    @GetMapping
+    @GetMapping("/api/chat/rooms")
     public ResponseEntity<List<ChatRoomResponse>> getChatRooms() {
         List<ChatRoomResponse> chatRooms = chatRoomService.getChatRooms();
         return ResponseEntity.ok(chatRooms);
     }
 
-    @PostMapping
-    public ResponseEntity<Long> createRoom(@RequestBody ChatRoomCreateRequest request) {
-        Long chatRoomId = chatRoomService.createChatRoom(request);
+    @PostMapping("/api/chat/rooms")
+    public ResponseEntity<String> createChatRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ChatRoomCreateRequest request) {
+        String chatRoomId = chatRoomService.createChatRoom(userDetails.getMemberId(), request);
         return ResponseEntity.ok(chatRoomId);
     }
 
