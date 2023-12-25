@@ -26,7 +26,7 @@ public class ChatRoomResponse {
                 .chatRoomId(chatRoom.getChatRoomId())
                 .chatRoomName(chatRoom.getChatRoomName())
                 .creatorId(chatRoom.getCreatorId())
-                .participantCount(chatRoom.getParticipantIds().size())
+                .participantCount(chatRoom.getParticipants().size())
                 .build();
     }
 
