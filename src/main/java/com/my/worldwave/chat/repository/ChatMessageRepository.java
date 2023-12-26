@@ -4,18 +4,13 @@ import com.my.worldwave.chat.entity.ChatMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+
+import java.time.LocalDateTime;
 
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, Long> {
 
-    Page<ChatMessage> findByChatRoomIdOrderByCreatedAtDesc(String chatRoomId, Pageable pageable);
-
-//    @Query("SELECT new com.my.worldwave.chat.dto.response.ChatMessageResponse(" +
-//            "m.id, m.content, s.id, s.nickname, p.storedFileName, m.chatMessageType, m.createdAt) " +
-//            "FROM ChatMessage m " +
-//            "JOIN m.sender s " +
-//            "LEFT JOIN s.profileImage p " +
-//            "WHERE m.chatRoom.id = :chatRoomId " +
-//            "ORDER BY m.createdAt DESC ")
-//    Page<ChatMessageResponse> findAllByChatRoomId(@Param("chatRoomId") Long chatRoomId, Pageable pageable);
+    @Query(value = "{ 'chatRoomId': ?0, 'createdAt': { $gt: ?1 } }", sort = "{ 'createdAt' : -1 }")
+    Page<ChatMessage> findChatMessages(String chatRoomId, LocalDateTime enteredAt, Pageable pageable);
 
 }

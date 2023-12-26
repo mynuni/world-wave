@@ -30,8 +30,6 @@ public class ChatRoom {
     @Builder
     public static class Participant {
         private String memberId;
-
-        // 회원의 최초 입장 시간 ~ 현재 시간까지의 채팅 내역 조회를 위해 필요
         private LocalDateTime enteredAt;
     }
 
