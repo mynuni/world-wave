@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, ChatMessageRequest> redisTemplate;
 
     @MessageMapping("/chat/rooms/{roomId}")
     public void message(@DestinationVariable String roomId, ChatMessageRequest chatMessageRequest) {

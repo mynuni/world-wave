@@ -8,6 +8,7 @@ import com.my.worldwave.exception.chat.ChatRoomNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -37,10 +38,10 @@ public class ChatMessageService {
     @Transactional(readOnly = true)
     public Page<ChatMessageResponse> getPreviousMessages(String chatRoomId, Long memberId, Pageable pageable) {
         LocalDateTime enteredAt = getEnteredAt(chatRoomId, String.valueOf(memberId));
-        return chatMessageRepository.findChatMessages(chatRoomId, enteredAt, pageable)
+        Pageable limit = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
+        return chatMessageRepository.findChatMessages(chatRoomId, enteredAt, limit)
                 .map(ChatMessageResponse::from);
     }
-
 
     private LocalDateTime getEnteredAt(String chatRoomId, String memberId) {
         ChatRoom chatRoom = mongoTemplate.findById(chatRoomId, ChatRoom.class);
@@ -53,7 +54,7 @@ public class ChatMessageService {
                 .filter(participant -> participant.getMemberId().equals(memberId))
                 .findFirst()
                 .map(ChatRoom.Participant::getEnteredAt)
-                .orElse(null);
+                .orElse(LocalDateTime.now());
     }
 
 }
