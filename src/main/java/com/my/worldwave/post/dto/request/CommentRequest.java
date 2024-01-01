@@ -1,4 +1,4 @@
-package com.my.worldwave.post.dto;
+package com.my.worldwave.post.dto.request;
 
 import lombok.*;
 
@@ -6,7 +6,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CommentRequestDto {
+public class CommentRequest {
     private String content;
 }

@@ -1,71 +1,70 @@
 package com.my.worldwave.post.service;
 
+import com.my.worldwave.event.CommentEvent;
 import com.my.worldwave.exception.post.CommentNotFoundException;
 import com.my.worldwave.exception.post.PostNotFoundException;
 import com.my.worldwave.member.entity.Member;
-import com.my.worldwave.post.dto.CommentRequestDto;
-import com.my.worldwave.post.dto.CommentResponseDto;
-import com.my.worldwave.post.dto.FeedRequest;
+import com.my.worldwave.post.dto.request.CommentRequest;
+import com.my.worldwave.post.dto.response.CommentDto;
+import com.my.worldwave.post.dto.request.PostSearchRequest;
+import com.my.worldwave.post.dto.response.CommentResponse;
 import com.my.worldwave.post.entity.Comment;
 import com.my.worldwave.post.entity.Post;
 import com.my.worldwave.post.repository.CommentRepository;
 import com.my.worldwave.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.my.worldwave.post.dto.CommentResponseDto.convertToDto;
+import static com.my.worldwave.post.dto.response.CommentDto.toDto;
 
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
-    public Page<CommentResponseDto> findAll(Long postId, Member member, FeedRequest feedRequest) {
-        Page<Comment> commentPage = commentRepository.findAllByPostId(postId, feedRequest.toPageable());
-
-        return commentPage.map(comment -> {
-            CommentResponseDto commentResponseDto = CommentResponseDto.convertToDto(comment);
-            commentResponseDto.setHasPermission(comment.getAuthor().getId().equals(member.getId()));
-            return commentResponseDto;
-        });
+    public Page<CommentResponse> findAll(Long postId, PostSearchRequest feedRequest) {
+        Page<Comment> allByPostId = commentRepository.findAllByPostId(postId, feedRequest.toPageable());
+        return commentRepository.findAllByPostId(postId, feedRequest.toPageable()).map(CommentResponse::from);
     }
 
     @Transactional(readOnly = true)
     public Comment findById(Long id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new CommentNotFoundException(id));
+        return commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
     }
 
-    public Long createComment(Long postId, Member member, CommentRequestDto commentRequestDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException(postId));
-
+    @Transactional
+    public CommentDto createComment(Long postId, Member member, CommentRequest commentRequest) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException(postId));
         Comment newComment = Comment.builder()
-                .content(commentRequestDto.getContent())
+                .content(commentRequest.getContent())
                 .author(member)
                 .post(post)
                 .build();
 
         Comment savedComment = commentRepository.save(newComment);
-        return savedComment.getId();
+        eventPublisher.publishEvent(new CommentEvent(this, member, post.getAuthor(), postId));
+        return toDto(savedComment);
     }
 
-    public CommentResponseDto updateComment(Long commentId, Member member, CommentRequestDto commentRequestDto) {
+    @Transactional
+    public CommentDto updateComment(Long commentId, Member member, CommentRequest commentRequest) {
         Comment foundComment = findById(commentId);
         checkAuthority(member, foundComment);
-        foundComment.updateEntity(commentRequestDto.getContent());
-        return convertToDto(foundComment);
+        foundComment.updateContent(commentRequest.getContent());
+        return toDto(foundComment);
     }
 
+    @Transactional
     public void deleteComment(Long id, Member member) {
         Comment foundComment = findById(id);
         checkAuthority(member, foundComment);
